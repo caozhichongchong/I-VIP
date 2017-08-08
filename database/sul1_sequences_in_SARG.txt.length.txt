@@ -1,0 +1,22 @@
+AB104852.1.gene6.p01	AB104852.1.gene6.p01 Sul1 dihydropteroate synthase. Encoded by gene sul1. ARO:3000410 sul1. [Pseudomonas aeruginosa]	279
+NC_010558.1.6276115.p01	NC_010558.1.6276115.p01 dihydropteroate synthase. Encoded by gene SulI. Identical to Dihydropteroate synthase related enzyme [Syntrophus aciditrophicus). ARO:3000410 sul1. [Escherichia coli 1520]	308
+AF071555.1.gene10.p01	AF071555.1.gene10.p01 dihydropteroate synthase. Encoded by gene sulI. Resistance to sulphonamides. ARO:3000410 sul1. [Salmonella typhimurium DT104]	120
+Q49184	Q49184 RecName: Full=Dihydropteroate synthase type-1; AltName: Full=Dihydropteroate synthase type I; Short=DHPS; AltName: Full=Dihydropteroate pyrophosphorylase type I.	283
+NC_011586.7045179.p01	NC_011586.7045179.p01 dihydropteroate synthase. Encoded by gene folP. Homology: Pterin-binding (HMMPfam: PF00809, score: 3.8999999999999714E-53) (PatternScan: PS00792, score: 0.0) (PatternScan: PS00793, score: 0.0) (Gene3D: G3DSA:3.20.20.20, score: 4.600000443308617E-63) (ProfileScan: PS50972, score: 0.0). Homology: Dihydropteroate synthase (HMMPanther: PTHR20941:SF1, score: 2.8000050426109873E-72). ARO:3000226 sulfonamide resistant dihydropteroate synthase folP. [Acinetobacter baumannii AB0057]	308
+AF191564.1.gene5.p01	AF191564.1.gene5.p01 dihydropteroate synthetase type 1. Encoded by gene sul1. SUL I. ARO:3000410 sul1. [Pseudomonas aeruginosa]	288
+AY339985.2.gene4.p01	AY339985.2.gene4.p01 resistance to sulphonamides protein. Encoded by gene sul1. ARO:3002529 AAC(3)-Id. [Salmonella typhimurium DT104]	323
+NP_940280	NP_940280 dihydropteroate synthase [Corynebacterium diphtheriae NCTC 13129].	283
+ABG36700	ABG36700 sul1delta fusion protein [Salmonella enterica subsp. enterica serovar Newport].	323
+EU675686.2.gene7.p01	EU675686.2.gene7.p01 dihydropteroate synthase type I. Sulfonamide resistance protein. Encoded by gene sul1. ARO:3000410 sul1. [Escherichia coli]	121
+AF174129.3.gene7.p01	AF174129.3.gene7.p01 Sul1. Encoded by gene sul1. Sulphonamides resistance. ARO:3000410 sul1. [Escherichia coli]	33
+DQ143913.1.gene6.p01	DQ143913.1.gene6.p01 Sul1. Encoded by gene sul1. Sulfonamide resistance protein. ARO:3000410 sul1. [Klebsiella pneumoniae]	276
+YP_001746870	YP_001746870 dihydrpteroate synthase [Salmonella enterica subsp. enterica serovar Brandenburg].	279
+CAF18336	CAF18336 dihydropteroate synthase type I [Morganella morganii subsp. morganii].	279
+BAF36555	BAF36555 dihydropteroate synthetase [Pseudomonas aeruginosa].	283
+AJ310778.1.gene12.p01	AJ310778.1.gene12.p01 Sul1 protein. Encoded by gene sul1. ARO:3000410 sul1. [Salmonella enterica subsp. enterica serovar Typhimurium]	149
+AJ584652.2.gene10.p01	AJ584652.2.gene10.p01 Sul1 dihydropteroate synthase. Encoded by gene sul1. ARO:3000410 sul1. [Pseudomonas aeruginosa]	19
+ACN65403	ACN65403 dihydropteroate synthase [Klebsiella pneumoniae].	279
+AY162283.2.gene7.p01	AY162283.2.gene7.p01 dihydropteroate synthase. Confers resistance to sulfonamides. Encoded by gene sul1. ARO:3000410 sul1. [Citrobacter freundii]	183
+ABQ96629	ABQ96629 Sul1 [Salmonella enterica subsp. enterica serovar Typhimurium].	279
+NC_011586.7045208.p01	NC_011586.7045208.p01 dihydropteroate synthase. Homology: Dihydropteroate synthase (HMMPanther: PTHR20941:SF1, score: 1.0E-70). Homology: Pterin-binding (HMMPfam: PF00809, score: 2.899999999999986E-52) (PatternScan: PS00792, score: 0.0) (PatternScan: PS00793, score: 0.0) (Gene3D: G3DSA:3.20.20.20, score: 7.900030794430246E-62) (ProfileScan: PS50972, score: 0.0). Encoded by gene folP. ARO:3000226 sulfonamide resistant dihydropteroate synthase folP. [Acinetobacter baumannii AB0057]	279
+AJ704863.gene21.p01	AJ704863.gene21.p01 Sul1. Encoded by gene partial sul1. Homology: Pterin-binding (HMMPfam: PF00809, score: 6.400000000000012E-26) (PatternScan: PS00792, score: 0.0) (PatternScan: PS00793, score: 0.0) (ProfileScan: PS50972, score: 0.0). ARO:3000410 sul1. [Klebsiella pneumoniae]	113
