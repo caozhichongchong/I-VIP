@@ -1,7 +1,7 @@
 # Integron Visualization and Identification Pipeline (I-VIP)
 #Copyright: LG209, Environmental Biotechnology Lab, The University of Hong Kong
-#Author: An Ni ZHANG, email: caozhichongchong@gmail.com
-#Citation
+#Author: An Ni ZHANG, email: caozhichongchong@gmail.com, researchgate: https://www.researchgate.net/profile/An_Ni_Zhang
+#Citation: under review
 
 #I-VIP is a well-organized and user-friendly pipeline for integron identification, extraction, annotation and visualization
 #I-VIP allows multiple tasks/inputs of both complete/draft genomes and assembled metagenomic datasets
