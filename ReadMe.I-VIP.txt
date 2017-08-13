@@ -4,6 +4,7 @@
 #Citation
 
 #I-VIP is a well-organized and user-friendly pipeline for integron identification, extraction, annotation and visualization
+#I-VIP allows multiple tasks/inputs of both complete/draft genomes and assembled metagenomic datasets
 #Requirement: database folder containing all attC, integrase and sulI databases
 #Requirement: scripts folder containing all scripts
 #Requirement: both sequences and orfs of input data
