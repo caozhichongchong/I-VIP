@@ -1,13 +1,17 @@
 import os
 import glob
 import argparse
+from Bio import SeqIO
+from Bio.SeqRecord import SeqRecord
 
 ############################################ Arguments and declarations ##############################################
 parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter)
 parser.add_argument("-input",
                     help="input path", type=str, default='.',metavar='.')
-parser.add_argument("--fasta",
-                    help="format of fasta sequences", type=str, default='.fa', metavar='.fa')
+parser.add_argument("-input_format",
+                    help="The input format", type=str, default='.pla.fa',metavar='.fasta or .AA or file.fasta')
+parser.add_argument("-orf",
+                    help="format of ORFs", type=str, default='.faa',metavar='.faa')
 parser.add_argument('--resultdir',
                     default="result", action='store', type=str, metavar='result',
                     help="Set the result directory for integron identification (default: result)")
@@ -25,16 +29,12 @@ parser.add_argument('--AA_type',
                     metavar="0 or 1",
                     choices=[0, 1],
                     action='store', default=0, type=int)
-parser.add_argument("--orf",
-                    help="format of ORFs", type=str, default='.faa', metavar='.faa')
 ################################################## Definition ########################################################
 args = parser.parse_args()
-input_path = os.path.abspath(args.fasta)
+input_path = os.path.abspath(args.input)
 distance = int(args.distance)
 search_path = os.path.abspath(args.searchdir)
-in_dir, input_file = os.path.split(args.input)
-in_dir = os.path.abspath(in_dir)
-list_fasta = glob.glob(os.path.join(in_dir,'*'+args.fasta))
+list_fasta = glob.glob(os.path.join(input_path,'*'+args.input_format))
 try:
     os.mkdir(args.resultdir)
 except OSError:
@@ -45,14 +45,15 @@ Cutoff_hitlength=50
 
 #IntI and SulI length
 Length = dict()
-for line in open(os.path.join(in_dir, 'database/' + 'Integrase.fasta.length.txt'), 'rb'):
+#for line in open(os.path.join('database/' + 'IntI1_database.fasta.length.txt'), 'rb'):
+for line in open(os.path.join('database/' + 'Integrase.fasta.length.txt'), 'rb'):
     Length.setdefault(str(line).split('\t')[0], float(str(line).split('\t')[2]))
-for line in open(os.path.join(in_dir, 'database/' + 'sul1_sequences_in_SARG.txt.length.txt'), 'rb'):
+for line in open(os.path.join('database/' + 'sul1_sequences_in_SARG.txt.length.txt'), 'rb'):
     Length.setdefault(str(line).split('\t')[0], float(str(line).split('\t')[2]))
 
 #IntI1 list
 IntI1=[]
-for line in open(os.path.join(in_dir, 'database/' + 'IntI1_list.txt'), 'rb'):
+for line in open(os.path.join('database/' + 'IntI1_list.txt'), 'rb'):
     IntI1.append(str(line).split('\r')[0].split('\n')[0])
 
 ################################################### Function #########################################################
@@ -61,27 +62,27 @@ def int_blast_list(file, list,Cutoff_identity,Cutoff_hitlength):
         for line in open(file, 'rb'):
             if float(str(line).split('\t')[2])>=Cutoff_identity:
                 if float(str(line).split('\t')[3])>=Cutoff_hitlength*float(Length.get(str(line).split('\t')[1]))/100:
-                    Contig = str(line).split('\t')[0]
-                    if list.get(Contig, 'None') == 'None':
-                        list.setdefault(Contig,
+                    AA=str(line).split('\t')[0]
+                    if list.get(AA, 'None') == 'None':
+                        list.setdefault(AA,
                                         '{0} {1} {2}'.format(str(line).split('\t')[2], str(line).split('\t')[3],
                                                              str(line).split('\t')[1]))
-                    elif float(str(line).split('\t')[2]) > float(str(list[Contig]).split(' ')[0]):
-                        list[Contig] = '{0} {1} {2}'.format(str(line).split('\t')[2], str(line).split('\t')[3],
+                    elif float(str(line).split('\t')[2]) > float(str(list[AA]).split(' ')[0]):
+                        list[AA] = '{0} {1} {2}'.format(str(line).split('\t')[2], str(line).split('\t')[3],
                                                                               str(line).split('\t')[1])
     except IOError:
         pass
 
+
 def int_attc_list(file, list):
     for line in open(file, 'rb'):
         if float(str(line).split('\t')[15])<=Cutoff_attc:
-            if list.get(str(line).split('\t')[0], 'None') == 'None':
-                list.setdefault(str(line).split('\t')[0],
+            if list.get(input_file+'_'+str(line).split('\t')[0], 'None') == 'None':
+                list.setdefault(input_file+'_'+str(line).split('\t')[0],
                                 [[str(line).split('\t')[15], str(line).split('\t')[7],
                                   str(line).split('\t')[8]]])
-            elif all(str(line).split('\t')[7] not in key and str(line).split('\t')[8] not in key for key in
-                         list[str(line).split('\t')[0]]):
-                list[str(line).split('\t')[0]].append(
+            else:
+                list[input_file+'_'+str(line).split('\t')[0]].append(
                     [str(line).split('\t')[15], str(line).split('\t')[7],
                      str(line).split('\t')[8]])
 
@@ -115,7 +116,6 @@ def ORFannotation(otherORFs):
 
 
 def FindORF(combine, key, contig, site1, site2, cutoff=4000):
-    Contigs_name.get(contig, 'None')
     if Contigs_name.get(contig, 'None')!='None':
         for otherORFs in Contigs_name.get(contig, 'None'):
             if ORFs_name[otherORFs] != 'None':
@@ -204,73 +204,72 @@ def Findattc(combine, key, contig, site1, site2, cutoff=4000):
 def Combine(target, lable, cutoff=4000):
     combine = dict()
     if lable == 'Contig':
-        temp3 = target
         i = 1
-        site1 = min(float(Attc_list.get(temp3, '-')[0][1]),
-                    float(Attc_list.get(temp3, '-')[0][2]))
-        site2 = max(float(Attc_list.get(temp3, '-')[0][1]),
-                    float(Attc_list.get(temp3, '-')[0][2]))
-        combine.setdefault(str(temp3) + ':' + str(i), [[str((site1 + site2) / 2)], ['attC' + ' ' + \
-                                                                                    Attc_list.get(temp3, '-')[0][0]],
+        site1 = min(float(Attc_list.get(target, '-')[0][1]),
+                    float(Attc_list.get(target, '-')[0][2]))
+        site2 = max(float(Attc_list.get(target, '-')[0][1]),
+                    float(Attc_list.get(target, '-')[0][2]))
+        combine.setdefault(str(target) + ':' + str(i), [[str((site1 + site2) / 2)], ['attC' + ' ' + \
+                                                                                    Attc_list.get(target, '-')[0][0]],
                                                        'attC'])
-        Attc_list.get(temp3, '-')[0].append('#')
-        Newsite =Findattc(combine, str(temp3) + ':' + str(i), temp3, float(site1), float(site2), cutoff)
+        Attc_list.get(target, '-')[0].append('#')
+        Newsite =Findattc(combine, str(target) + ':' + str(i), target, float(site1), float(site2), cutoff)
         #combine attC sites until no attC was in the range
         while (float(site1) + float(site2)) / 2 != (float(Newsite[0]) + \
                                                             float(Newsite[1])) / 2:
             site1 = float(Newsite[0])
             site2 = float(Newsite[1])
-            Newsite =Findattc(combine, str(temp3) + ':' + str(i), temp3, float(site1), float(site2), cutoff)
+            Newsite =Findattc(combine, str(target) + ':' + str(i), target, float(site1), float(site2), cutoff)
         if bool(Integrase_list) or bool(SulI_list): #combine sulI and integrase
-            Newsite = FindORF(combine, str(temp3) + ':' + str(i), temp3, float(Newsite[0]), float(Newsite[1]),
+            Newsite = FindORF(combine, str(target) + ':' + str(i), target, float(Newsite[0]), float(Newsite[1]),
                               cutoff)
-        if str(Contigs_name.get(temp3, 'None'))!='None':
-            Contigs_name.get(temp3, 'None').reverse()
+        if str(Contigs_name.get(target, 'None'))!='None':
+            Contigs_name.get(target, 'None').reverse()
             # reverse contig ORFs to add integrase and SulI to the other end
             if bool(Integrase_list) or bool(SulI_list):
-                Newsite = FindORF(combine, str(temp3) + ':' + str(i), temp3, float(Newsite[0]), float(Newsite[1]),
+                Newsite = FindORF(combine, str(target) + ':' + str(i), target, float(Newsite[0]), float(Newsite[1]),
                                   cutoff)
         # combine attC sites until no attC was in the range
         while (float(site1) + float(site2)) / 2 != (float(Newsite[0]) + \
                                                             float(Newsite[1])) / 2:
             site1 = float(Newsite[0])
             site2 = float(Newsite[1])
-            Newsite = Findattc(combine, str(temp3) + ':' + str(i), temp3, float(site1), float(site2), cutoff)
+            Newsite = Findattc(combine, str(target) + ':' + str(i), target, float(site1), float(site2), cutoff)
             if bool(Integrase_list) or bool(SulI_list):
-                Newsite = FindORF(combine, str(temp3) + ':' + str(i), temp3, float(Newsite[0]), float(Newsite[1]),
+                Newsite = FindORF(combine, str(target) + ':' + str(i), target, float(Newsite[0]), float(Newsite[1]),
                                   cutoff)
-            if str(Contigs_name.get(temp3, 'None')) != 'None':
-                Contigs_name.get(temp3, 'None').reverse()
+            if str(Contigs_name.get(target, 'None')) != 'None':
+                Contigs_name.get(target, 'None').reverse()
                 if bool(Integrase_list) or bool(SulI_list):
-                    Newsite = FindORF(combine, str(temp3) + ':' + str(i), temp3, float(Newsite[0]), float(Newsite[1]),
+                    Newsite = FindORF(combine, str(target) + ':' + str(i), target, float(Newsite[0]), float(Newsite[1]),
                                       cutoff)
-        for otherattC in Attc_list.get(temp3, '-'): #for more than on integrons on a contig
+        for otherattC in Attc_list.get(target, '-'): #for more than on integrons on a contig
             if otherattC[-1] != '#':
                 i += 1
                 site1 = min(float(otherattC[1]),
                             float(otherattC[2]))
                 site2 = max(float(otherattC[1]),
                             float(otherattC[2]))
-                combine.setdefault(str(temp3) + ':' + str(i), [[str((site1 + site2) / 2)], ['attC' + ' ' + \
-                                                                                            Attc_list.get(temp3, '-')[
+                combine.setdefault(str(target) + ':' + str(i), [[str((site1 + site2) / 2)], ['attC' + ' ' + \
+                                                                                            Attc_list.get(target, '-')[
                                                                                                 0][0]],
                                                                'attC'])
-                Attc_list.get(temp3, '-')[0].append('#')
-                Newsite =Findattc(combine, str(temp3) + ':' + str(i), temp3, float(site1), float(site2), cutoff)
+                Attc_list.get(target, '-')[0].append('#')
+                Newsite =Findattc(combine, str(target) + ':' + str(i), target, float(site1), float(site2), cutoff)
                 # combine attC sites until no attC was in the range
                 while (float(site1) + float(site2)) / 2 != (float(Newsite[0]) + \
                                                                     float(Newsite[1])) / 2:
                     site1 = float(Newsite[0])
                     site2 = float(Newsite[1])
-                    Newsite = Findattc(combine, str(temp3) + ':' + str(i), temp3, float(site1), float(site2), cutoff)
+                    Newsite = Findattc(combine, str(target) + ':' + str(i), target, float(site1), float(site2), cutoff)
                 if bool(Integrase_list) or bool(SulI_list):
-                    Newsite = FindORF(combine, str(temp3) + ':' + str(i), temp3, float(Newsite[0]), float(Newsite[1]),
+                    Newsite = FindORF(combine, str(target) + ':' + str(i), target, float(Newsite[0]), float(Newsite[1]),
                                       cutoff)
-                if str(Contigs_name.get(temp3, 'None')) != 'None':
-                    Contigs_name.get(temp3, 'None').reverse()
+                if str(Contigs_name.get(target, 'None')) != 'None':
+                    Contigs_name.get(target, 'None').reverse()
                     # reverse contig ORFs to add integrase and SulI to the other end
                     if bool(Integrase_list) or bool(SulI_list):
-                        Newsite = FindORF(combine, str(temp3) + ':' + str(i), temp3, float(Newsite[0]),
+                        Newsite = FindORF(combine, str(target) + ':' + str(i), target, float(Newsite[0]),
                                           float(Newsite[1]),
                                           cutoff)
                 # combine attC sites until no attC was in the range
@@ -278,22 +277,22 @@ def Combine(target, lable, cutoff=4000):
                                                                     float(Newsite[1])) / 2:
                     site1 = float(Newsite[0])
                     site2 = float(Newsite[1])
-                    Newsite = Findattc(combine, str(temp3) + ':' + str(i), temp3, float(site1), float(site2), cutoff)
+                    Newsite = Findattc(combine, str(target) + ':' + str(i), target, float(site1), float(site2), cutoff)
                     if bool(Integrase_list) or bool(SulI_list):
-                        Newsite = FindORF(combine, str(temp3) + ':' + str(i), temp3, float(Newsite[0]),
+                        Newsite = FindORF(combine, str(target) + ':' + str(i), target, float(Newsite[0]),
                                           float(Newsite[1]),
                                           cutoff)
-                    if str(Contigs_name.get(temp3, 'None')) != 'None':
-                        Contigs_name.get(temp3, 'None').reverse()
+                    if str(Contigs_name.get(target, 'None')) != 'None':
+                        Contigs_name.get(target, 'None').reverse()
                         if bool(Integrase_list) or bool(SulI_list):
-                            Newsite = FindORF(combine, str(temp3) + ':' + str(i), temp3, float(Newsite[0]),
+                            Newsite = FindORF(combine, str(target) + ':' + str(i),target, float(Newsite[0]),
                                               float(Newsite[1]),
                                               cutoff)
     return combine
 
 
 def write_integron(Name, Site, Annotation, Inttype):
-    f1 = open(os.path.join(in_dir + '/' + args.resultdir, os.path.splitext(str(input_file))[0] + '.Integron.txt'), 'a')
+    f1 = open(os.path.join(args.resultdir, str(input_file).split(str(args.input_format))[0] + '.Integron.txt'), 'a')
     NumofattC = int(str(";".join([str(x) for x in Annotation])).count('attC'))
     if ('IntI1' in Inttype) and ('attC' in Inttype) \
             and ('SulI' in Inttype) and NumofattC >= 1:
@@ -331,10 +330,29 @@ def write_integron(Name, Site, Annotation, Inttype):
 
 
 ################################################### Programme #######################################################
-
+# innitiate SulI/IntI into separate files because different files of same GCA will be mixed up
+#fsul1=open(os.path.join(search_path, 'all.sul1.blast.txt'))
+#for line in fsul1:
+#    temp = str(line).split('\t')[0].split('_')
+#    if len(temp) > 2:
+#        Filename= '_'.join(temp[0:-1])
+#    else:
+#        Filename = temp[0]
+#    fnew=open(os.path.join(search_path, Filename+str(args.fasta)+'.sul1.txt'),'ab')
+#    fnew.write(line)
+#fint1=open(os.path.join(search_path, 'all.IntI.blast.txt'))
+#for line in fint1:
+#    temp = str(line).split('\t')[0].split('_')
+#    if len(temp) > 2:
+#        Filename = '_'.join(temp[0:-1])
+#    else:
+#        Filename = temp[0]
+#    fnew=open(os.path.join(search_path, Filename+str(args.fasta)+'.IntI.txt'),'ab')
+#    fnew.write(line)
 
 ORFs_name=dict()
-for line in open(os.path.join(in_dir, 'all.orfs.aa.length'),'rb'):
+
+for line in open(os.path.join(input_path, 'all.orfs.aa.length'),'rb'):
     if args.AA_type ==0:
         ORFs_name.setdefault(str(line).split('\t')[0],
                                      [float(str(line).split('\t')[1].split(' ')[-2]),
@@ -346,31 +364,11 @@ for line in open(os.path.join(in_dir, 'all.orfs.aa.length'),'rb'):
 
 for file_name in list_fasta:
     print 'Searching ' + str(file_name)
-    in_dir, input_file = os.path.split(file_name)
+    input_path, input_file = os.path.split(file_name)
     try:
         Attc_name = os.path.join(search_path, str(input_file) + '.Z.max.attc.hits.txt2.txt')
         Attc_list = dict()
         int_attc_list(Attc_name, Attc_list)
-        Contigs_name = dict()
-        Contigslist=[]
-        for AA in ORFs_name:
-            if input_file in str(AA):
-                Contigname=str(AA)
-                if args.orf + '_' in Contigname:
-                    Contigname = Contigname.split(args.orf + '_')[1]
-                if args.fasta + '_' in Contigname:
-                    Contigname = Contigname.split(args.fasta + '_')[1]
-                temp=Contigname.split('_')
-                if len(temp)<2:
-                    Contigname = Contigname.split('_')[0]
-                else:
-                    Contigname=Contigname.split('_')[0]+'_'+"_".join(Contigname.split('_')[1:-1])
-                Contigslist.append(Contigname)
-                if Contigs_name.get(Contigname, 'None') == 'None':
-                    Contigs_name.setdefault(Contigname, [AA])
-                else:
-                    Contigs_name[Contigname].append(AA)
-        Contigslist=list(Contigslist)
         try:
             SulI_name = os.path.join(search_path, str(input_file) + '.sul1.txt')
             SulI_list = dict()
@@ -382,17 +380,25 @@ for file_name in list_fasta:
             Integrase_list = dict()
             int_blast_list(IntI_name, Integrase_list, Cutoff_identity, Cutoff_hitlength)
         except IOError:
-            print 'No Int for ' + str(input_file)
-        Lable = 'Integron_Type' + '\t' + 'Contig_ID' + '\t' + 'Gene_Cassatte_Number' + '\t' + \
-                'Gene_Locus' + '\t' + 'Gene_Annotation' + '\n'
+            print 'No IntI for ' + str(input_file)
         f1 = open(
             os.path.join(args.resultdir, os.path.splitext(str(input_file))[0] + '.Integron.txt'),
-            'a')
+            'ab')
+        Lable = 'Integron_Type' + '\t' + 'Contig_ID' + '\t' + 'Gene_Cassatte_Number' + '\t' + \
+                'Gene_Locus' + '\t' + 'Gene_Annotation' + '\n'
         f1.write(Lable)
         f1.close()
-        for Contigname in Contigslist:
-            if bool(Attc_list) and Attc_list.get(Contigname, '-') != '-':
-                result = Combine(Contigname, 'Contig', distance)
+        for record in  SeqIO.parse(open(input_file), "fasta"):
+            if bool(Attc_list) and Attc_list.get(input_file+'_'+record.id, '-') != '-':
+                Contigs_name = dict()
+                Contig=input_file + '_' + record.id
+                for AA in ORFs_name:
+                    if Contig in str(AA).replace(args.orf,args.input_format):
+                        if Contigs_name.get(Contig, 'None') == 'None':
+                            Contigs_name.setdefault(Contig, [AA])
+                        else:
+                            Contigs_name[Contig].append(AA)
+                result = Combine(Contig, 'Contig', distance)
                 for key in result:
                     write_integron(key, result[key][0], result[key][1], result[key][2])
     except IOError:

@@ -27,4 +27,5 @@ def addname(file_name):
 ################################################### Programme #######################################################
 for file_name in list_fasta:
     filedir,file_name=os.path.split(file_name)
+    print file_name
     addname(file_name)

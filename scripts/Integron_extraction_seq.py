@@ -21,8 +21,8 @@ parser.add_argument('--AA_format',
                     choices=[0, 1],
                     action='store', default=0, type=int)
 parser.add_argument('--gbffdir',
-                    default="gbff_copy", action='store', type=str, metavar='gbff_copy',
-                    help="Set the directory of Genbank files (default: gbff_copy)\nNo gbff input: None")
+                    default="gbff", action='store', type=str, metavar='gbff',
+                    help="Set the directory of Genbank files (default: gbff)\nNo gbff input: None")
 parser.add_argument("--fasta",
                     help="format of fasta sequences", type=str, default='.fa', metavar='.fa')
 parser.add_argument("--orf",
@@ -30,14 +30,11 @@ parser.add_argument("--orf",
 ################################################## Definition ########################################################
 args = parser.parse_args()
 AA_path = os.path.abspath(args.AAdir)
-if args.gbffdir!='None':
-    gbff_path = os.path.abspath(args.gbffdir)
-else:
-    gbff_path=args.gbffdir
+gbff_path = os.path.abspath(args.gbffdir)
+print gbff_path
 AA_format=args.AA_format
 input_path = os.path.abspath(args.input)
-in_dir = os.path.abspath(input_path)
-list_fasta = glob.glob(os.path.join(in_dir,'*'+args.input_format))
+list_fasta = glob.glob(os.path.join(input_path,'*'+args.input_format))
 try:
     os.mkdir(args.resultdir)
 except OSError:
@@ -192,11 +189,11 @@ class Integron:
 
 
 def int_integron(file,AA_format):
+    print os.path.join(in_dir,file)
     for line in open(os.path.join(in_dir,file),'rb'):
         if ':' in str(line).split('\t')[1]: #set up Integron
             Keyintegron=Integron()
             Keyintegron.setName(str(line).split('\t')[1])
-            print Keyintegron.name
             Keyintegron.setType(str(line).split('\t')[0])
             Keyintegron.setattClocus()
             locusmin = locusmax = locusattc = locusstart =0
@@ -219,7 +216,7 @@ def int_integron(file,AA_format):
             Keyintegron.setInttag()
             Keyintegron.setSul1()
             Keyintegron.setSul1locus()
-            if Keyintegron.type in ['A','B','C','D']: #setup integrase and sulI location
+            if Keyintegron.type in ['A','B','C','D','E']: #setup integrase and sulI location
                 Keyintegron.setIntlocus()
                 locusint=0
                 for key in str(line).split('\t')[4].split(';'):
@@ -281,7 +278,7 @@ def write_integrase(key,LocusORF1,LocusORF2,i,f,record,end,file):
 
 def write_AA(key,LocusORF1,LocusORF2,i,f,record,Tag,file):
     if len(record.seq)==0:#for empty ORFs, no output
-        #f5 = SeqIO.parse(os.path.join(AA_path, str(file).replace(str(args.input_format), '.fa')), 'fasta')
+        #f5 = SeqIO.parse(os.path.join(AA_path, str(file).replace(str(args.input_format), args.fasta)), 'fasta')
         flog.write('empty ORF: '+str(key.name)+ ':' + str(i) +'\t'+str(record.id)+'\n')
         #for record in f5:
         #    Sequence=str(record.seq)[int(LocusORF1 - 1):int(LocusORF2 - 1)]
@@ -372,6 +369,7 @@ def extract_ORFs(file,key,AA_format):
         f4 = open(os.path.join(str(args.resultdir) + '/ClassI/Intstruc', str(file).replace(str(args.input_format), '.txt')),
                   'ab')
     f2 = SeqIO.parse(os.path.join(AA_path, str(file).replace(str(args.input_format), args.orf)), 'fasta')
+    print os.path.join(AA_path, str(file).replace(str(args.input_format), args.orf))
     if key.output != 'TRUE': #not extracted integrons
         Beforetemp1 = '' #forward and afterward ORFs temp storing
         Beforelength1 =[]
@@ -380,71 +378,68 @@ def extract_ORFs(file,key,AA_format):
         Locusmean=0
         f4temp=''
         for record in f2:# for each ORF
-            temp='_'.join((str(record.id).split('_')[0:-1]))
-            if str(key.name).split(':')[0] == temp:
-                print record.id
-                if AA_format==1: #prodigal output
-                    LocusORF1 = float(str(record.description).split(' # ')[1])
-                    LocusORF2 = float(str(record.description).split(' # ')[2])
-                else: #gbff parse output
-                    LocusORF1 = float(str(record.description).split(' ')[-2])
-                    LocusORF2 = float(str(record.description).split(' ')[-1])
-                Locusmeanold = Locusmean
-                Locusmean = (LocusORF1 + LocusORF2) / 2
-                if Locusmean != Locusmeanold:
-                    if key.l1 > LocusORF2:  # set forward ORFs
-                        Beforetemp1 = record
-                        Beforelength1 = [min(LocusORF1, LocusORF2), max(LocusORF1, LocusORF2),
-                                         (LocusORF1 + LocusORF2) / 2]
-                        Aftertemp = key.structure[-1]
-                    elif key.l1 == key.l2 and str(Beforetemp1)!='':  # B with only one attC
-                        key.doOutput()
-                        Beforetemp1 =write_forward(key, Beforetemp1,  Beforelength1,  f1, f3, f4,file)
-                        write_structure(key, key.attclocus[0], '-1', f4, 'attC', 'None')
-                        key.attclocus.remove(key.attclocus[0])
-                        Aftertemp = key.structure[-1]
-                    elif key.l1 <= LocusORF2 <= key.l2 or key.l1 <= LocusORF1 <= key.l2 or key.l1 <= Locusmean <= key.l2:
-                        # ORF between two attCs or one attC + SulI
-                        # Locusmean, LocusORF1 and LocusORF2 are all used here to completely extract all possible ORFs
-                        key.doOutput()
-                        Tag = 'ORF'
-                        key.changeL1(min(LocusORF1, LocusORF2))
-                        key.changeL2(max(LocusORF1, LocusORF2))
-                        if i == 1:  # start writing forward ORFs
-                            Beforetemp1 = write_forward(key, Beforetemp1,  Beforelength1,  f1, f3,
-                                                        f4,file)
-                        # start writing ORFs in the middle
-                        if any(locussulI - 5 <= (LocusORF1 + LocusORF2) / 2 <= locussulI + 5 for locussulI in key.sul1locus):
-                            Tag = 'SulI'
-                        else:
-                            Tag = write_integrase(key, LocusORF1, LocusORF2, i, f3, record, 'None',file)
-                        write_AA(key, LocusORF1, LocusORF2, i, f1, record, Tag,file)
-                        f4temp = compare_structure(key, Locusmean, i, f4, f4temp,Tag)
-                        i += 1
-                        Aftertemp = key.structure[-1]
-                    elif Aftertemp >= 0 and str(Beforetemp1)=='':  # write all afterward ORFs
-                        if f4temp!='':
-                            f4temp=write_structure(key, Locusmean, '+1', f4, 'None', f4temp) #write all remaining ORFs after all attC sites
-                        if Aftertemp==0: #sulI or Integrase
-                            try:#write all remaining attC sites
-                                for locusattc in key.attclocus:
-                                    write_structure(key, locusattc, '+1', f4, 'attC','None')
-                                key.attclocus = []
-                                break
-                            except KeyError:
-                                break
-                        if Aftertemp == 1:#attC ends
-                            write_structure(key, Locusmean, '+1', f4, 'None', f4temp)
-                            write_AA(key, LocusORF1, LocusORF2, '+1', f1, record, 'ORF',file)
-                            try:#write all remaining attC sites
-                                for locusattc in key.attclocus:
-                                    write_structure(key, locusattc, '+1', f4, 'attC','None')
-                                key.attclocus=[]
-                            except KeyError:
-                                pass
-                            write_structure(key, Locusmean, '+1', f4, 'ORF', 'None')
-                        Aftertemp -= 1
-                        key.changeL2(max(LocusORF1, LocusORF2))
+            if AA_format==1: #prodigal output
+                LocusORF1 = float(str(record.description).split(' # ')[1])
+                LocusORF2 = float(str(record.description).split(' # ')[2])
+            else: #gbff parse output
+                LocusORF1 = float(str(record.description).split(' ')[-2])
+                LocusORF2 = float(str(record.description).split(' ')[-1])
+            Locusmeanold = Locusmean
+            Locusmean = (LocusORF1 + LocusORF2) / 2
+            if Locusmean != Locusmeanold:
+                if key.l1 > LocusORF2:  # set forward ORFs
+                    Beforetemp1 = record
+                    Beforelength1 = [min(LocusORF1, LocusORF2), max(LocusORF1, LocusORF2),
+                                     (LocusORF1 + LocusORF2) / 2]
+                    Aftertemp = key.structure[-1]
+                elif key.l1 == key.l2 and str(Beforetemp1)!='':  # B with only one attC
+                    key.doOutput()
+                    Beforetemp1 =write_forward(key, Beforetemp1,  Beforelength1,  f1, f3, f4,file)
+                    write_structure(key, key.attclocus[0], '-1', f4, 'attC', 'None')
+                    key.attclocus.remove(key.attclocus[0])
+                    Aftertemp = key.structure[-1]
+                elif key.l1 <= LocusORF2 <= key.l2 or key.l1 <= LocusORF1 <= key.l2 or key.l1 <= Locusmean <= key.l2:
+                    # ORF between two attCs or one attC + SulI
+                    # Locusmean, LocusORF1 and LocusORF2 are all used here to completely extract all possible ORFs
+                    key.doOutput()
+                    Tag = 'ORF'
+                    key.changeL1(min(LocusORF1, LocusORF2))
+                    key.changeL2(max(LocusORF1, LocusORF2))
+                    if i == 1:  # start writing forward ORFs
+                        Beforetemp1 = write_forward(key, Beforetemp1,  Beforelength1,  f1, f3,
+                                                    f4,file)
+                    # start writing ORFs in the middle
+                    if any(locussulI - 5 <= Locusmean <= locussulI + 5 for locussulI in key.sul1locus):
+                        Tag = 'SulI'
+                    else:
+                        Tag = write_integrase(key, LocusORF1, LocusORF2, i, f3, record, 'None',file)
+                    write_AA(key, LocusORF1, LocusORF2, i, f1, record, Tag,file)
+                    f4temp = compare_structure(key, Locusmean, i, f4, f4temp,Tag)
+                    i += 1
+                    Aftertemp = key.structure[-1]
+                elif Aftertemp >= 0 and str(Beforetemp1)=='':  # write all afterward ORFs
+                    if f4temp!='':
+                        f4temp=write_structure(key, Locusmean, '+1', f4, 'None', f4temp) #write all remaining ORFs after all attC sites
+                    if Aftertemp==0: #sulI or Integrase
+                        try:#write all remaining attC sites
+                            for locusattc in key.attclocus:
+                                write_structure(key, locusattc, '+1', f4, 'attC','None')
+                            key.attclocus = []
+                            break
+                        except KeyError:
+                            break
+                    if Aftertemp == 1:#attC ends
+                        write_structure(key, Locusmean, '+1', f4, 'None', f4temp)
+                        write_AA(key, LocusORF1, LocusORF2, '+1', f1, record, 'ORF',file)
+                        try:#write all remaining attC sites
+                            for locusattc in key.attclocus:
+                                write_structure(key, locusattc, '+1', f4, 'attC','None')
+                            key.attclocus=[]
+                        except KeyError:
+                            pass
+                        write_structure(key, Locusmean, '+1', f4, 'ORF', 'None')
+                    Aftertemp -= 1
+                    key.changeL2(max(LocusORF1, LocusORF2))
     f1.close()
     f3.close()
     f4.close()
@@ -459,19 +454,10 @@ def extract_Seqs(file,key):
         f1 = open(os.path.join(str(args.resultdir) + '/Other/Seqs', str(file).replace(str(args.input_format), '.fasta')), 'ab')
     f2 = SeqIO.parse(os.path.join(AA_path, str(file).replace(str(args.input_format), args.fasta)), 'fasta')
     for record in f2:
-        if str(key.name).split(':')[0] == record.id:
-            print str(key.name).split(':')[0]
-            print record.id
-            if key.output == 'FALSE':
-                flog.write('Failed output integron: '+str(key.name)+'\t'+str(key.l1)+'\t'+str(key.l2)+'\n')
-            f1.write('>' + str(key.name) + '\t' +str(key.type)+'\t'+ str(record.description) + '\n')
-            locus1=int(key.newl1 - 1)
-            locus2=int(key.newl2 - 1)
-            if int(key.newl1 - 1)<0:
-                locus1=0
-            if int(key.newl2 - 1)>(len(str(record.seq))-1):
-                locus2=len(str(record.seq))-1
-            f1.write(str(record.seq)[locus1:locus2] + '\n')
+        if key.output == 'FALSE':
+            flog.write('Failed output integron: '+str(key.name)+'\t'+str(key.l1)+'\t'+str(key.l2)+'\n')
+        f1.write('>' + str(key.name) + '\t' +str(key.type)+'\t'+ str(record.description) + '\n')
+        f1.write(str(record.seq)[max(int(key.newl1 - 5),0):min(int(key.newl2 +5),len(record.seq)-1)] + '\n')
     f1.close()
 
 
@@ -488,9 +474,8 @@ def extract_gbff(gbff_list, file, key):
                     os.path.join(str(args.resultdir) + '/Other/Anno',
                                  str(file).replace(str(args.input_format), '.annotation')),
                     'ab')
-            i = 0
             for record in SeqIO.parse(gbfffile, "genbank"):
-                if str(key.name).split(':')[0] == record.id:
+                if record.id in str(file):
                     for feature in record.features:
                         annotation = []  # annotation of one gene
                         start = float(feature.location.start.position)
@@ -511,13 +496,12 @@ def extract_gbff(gbff_list, file, key):
 def extract_integrase_gbff(gbff_list, file, key):
     for gbfffile in gbff_list:
         if str(file).split('_')[1] in gbfffile:
-            i=0
             for record in SeqIO.parse(gbfffile, "genbank"):
-                if str(key.name).split(':')[0] == record.id:
+                if record.id in str(file):
                     for feature in record.features:  # annotation of one gene
                         start = float(feature.location.start.position)
                         end = float(feature.location.end.position)
-                        if key.type in ['A', 'B-non-IntI1', 'B-IntI1']:
+                        if key.type in ['A', 'C', 'B']:
                             for locusint in key.intlocus:
                                 if min(start, end) <= locusint <= max(start, end):
                                     annotation = [str(feature.type) + ';' +
@@ -529,14 +513,15 @@ def extract_integrase_gbff(gbff_list, file, key):
 
 ################################################### Programme #######################################################
 #optimal input of args.AA_format
-flog = open(os.path.join(str(args.AAdir), 'Integron_Extraction_Pla.log'), 'ab')
+flog = open(os.path.join(str(args.AAdir), 'Integron_Extraction.log'), 'ab')
 #main programme body
 for file_name in list_fasta:
     try:
         in_dir, input_file = os.path.split(file_name)
-        print file_name
+        accession=input_file.split(args.input_format)[0].split('_')[1]
         if gbff_path != 'None':
-            list_gbff = glob.glob(os.path.join(gbff_path, '*' + str(input_file).split('_')[1] + '*'))
+            list_gbff = glob.glob(os.path.join(gbff_path, '*' + accession + '*'))
+            print list_gbff
         int_integron(input_file,AA_format)
     except IOError:
         flog.write('Files were missing?\n')

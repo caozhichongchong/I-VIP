@@ -9,13 +9,13 @@ parser.add_argument('-i',
                     help="The irratation time",
                     metavar="1", action='store', default=1, type=int)
 parser.add_argument("-input",
-                    help="The input integron locus file", type=str, default='output/all.Int.blast.txt',metavar='output/all.Int.blast.txt')
+                    help="The input folder", type=str, default='.',metavar='.')
 parser.add_argument("-target",
                     help="The taget sequences file", type=str, default='None',metavar='None')
 parser.add_argument("--fasta",
-                    help="format of fasta sequences", type=str, default='.fa',metavar='.fa')
+                    help="format of fasta sequences", type=str, default='.pla.fa',metavar='.pla.fa')
 parser.add_argument("--orf",
-                    help="format of ORFs", type=str, default='.faa',metavar='.faa')
+                    help="format of ORFs", type=str, default='.pla.faa',metavar='.pla.faa')
 parser.add_argument("--func_type",
                     help="Function, eg: 0 for sequence extraction; 1 for cmsearch result analysis; 2 for attC result formating",
                     metavar="0 or 1 or 2",
@@ -38,33 +38,26 @@ parser.add_argument('--outputdir',
 parser.add_argument('--head',
                     help="Extract the extremity of sequence",
                     type=str, default='Warning.txt',metavar='Warning.txt')
-parser.add_argument('--quick',
-                    help="attC search and filtering setting \
-                    (from least strict to most strict: \'max\', \'nohmm\', \'mid\', \'\', \'rfam\'), (default \'mid\')",
-                    metavar="mid",
-                    action='store', default='mid', type=str)
-
 ################################################## Definition ########################################################
 args = parser.parse_args()
-input_path = os.path.abspath(args.fasta)
-in_dir, input_file = os.path.split(input_path)
-Int_file = (os.path.join(in_dir, args.input))
+input_path = os.path.abspath(args.input)
+Int_file = (args.input+'/output/all.IntI.blast.txt')
 if args.func_type == 0:
     if args.i==1:
         Distance=20000
         try:
-            os.mkdir('extract')
+            os.mkdir(str(input_path)+'/extract')
         except OSError:
             pass
-        f1 = open(os.path.join('extract','Finished_Integrase_seq.fa'), 'ab')
+        f1 = open(os.path.join(str(input_path)+'/extract','Finished_Integrase_seq.fa'), 'ab')
     else:
         Distance=4000
-        f1 = open(os.path.join('extract',str(args.i)+'-1-Integrase_seq.fa'), 'ab')
-        f2 = open(os.path.join('extract',str(args.i) + '-2-Integrase_seq.fa'), 'ab')
+        f1 = open(os.path.join(str(input_path)+'/extract',str(args.i)+'-1-Integrase_seq.fa'), 'ab')
+        f2 = open(os.path.join(str(input_path)+'/extract',str(args.i) + '-2-Integrase_seq.fa'), 'ab')
     if args.target=='None':
-        cmd1='ls *'+str(args.fasta)+' > Target.txt'
+        cmd1='ls '+str(input_path)+'/*'+str(args.fasta)+' > '+str(input_path)+'/Target.txt'
         os.system(cmd1)
-        Target_file = 'Target.txt'
+        Target_file = str(input_path)+'/Target.txt'
     else:
         Target_file=args.target
 elif args.func_type == 1:
@@ -76,7 +69,7 @@ elif args.func_type == 1:
         File_attC1 = str(args.i)+'-1-Integrase_seq.fa.Z.max.attc.hits.txt2.txt'
         File_attC2 = str(args.i) + '-2-Integrase_seq.fa.Z.max.attc.hits.txt2.txt'
 else:
-    Attc_file_name=glob.glob(os.path.join('extract','*.new.txt2.txt'))
+    Attc_file_name=glob.glob(os.path.join(str(input_path)+'/extract','*.new.txt2.txt'))
     try:
         os.mkdir(args.outputdir)
     except OSError:
@@ -101,6 +94,21 @@ def Adjust_locus(line,Locus):
     else:
         return [int(str(line).split('\t')[7]),int(str(line).split('\t')[8])]
 
+def Calculate_length(list_of_files):
+    for file_name in list_of_files:
+        try:
+            Fasta_name = open(file_name, 'r')
+            f = open(file_name + '.length', 'w')
+            for record in SeqIO.parse(Fasta_name, 'fasta'):
+                f.write(str(record.id) + '\t' + str(record.description).replace('\t', ' ') + '\t' + str(
+                    len(record.seq)) + '\n')
+            f.close()
+        except (IOError):
+            print 'Files were missing: '+'file_name'
+        finally:
+            print 'Cleaning Up...'
+            del file_name
+
 
 def filter_blast_list(file,Cutoff_identity,Cutoff_hitlength):
     try:
@@ -114,6 +122,7 @@ def filter_blast_list(file,Cutoff_identity,Cutoff_hitlength):
         return file + '.filter.txt'
     except IOError:
         print str(file)+' missing!'
+
 
 def Cmsearch(list_file):
     print 'Cmsearch'
@@ -138,9 +147,8 @@ def Cmsearch(list_file):
         Result=[]
         for files in Newlist:
             cmd = 'cmsearch --tblout ' + str(files) + '.Z.max.attc.hits.txt -Z `du -m ' + str(files) + \
-                  ' | cut -f1` --' + str(args.quick) + ' --cpu ' + str(args.thread) + ' -E ' + str(
-                args.cutoff) + ' database/attc_4.cm.hmm ' + \
-                  str(files)
+                  ' | cut -f1` --mid --cpu ' + str(args.thread) + ' -E ' + str(
+                args.cutoff) + ' database/attc_4.cm.hmm ' + str(files)
             print cmd
             os.system(cmd)
             Result.append(str(files) + '.Z.max.attc.hits.txt')
@@ -158,10 +166,16 @@ def Cmsearch(list_file):
 
 ################################################### Programme #######################################################
 #for sequence-based blast result
+#if args.i == 1:
+    #cmd='python scripts/Addfilename.py -input '+str(input_path)+' -orf ' +args.orf+ \
+    #            '\ncat '+ os.path.join(str(input_path),'*add') + ' > ' \
+    #           + os.path.join(str(input_path),'all.orfs.aa') + '\nrm -rf '+ os.path.join(str(input_path),'*add')+'\n'
+    #os.system(cmd)
+    #Calculate_length(['all.orfs.aa'])
 ORFs_name = dict()
 ORFs_anno = dict()
 AA_Length = dict()
-for line in open(os.path.join(in_dir, 'all.orfs.aa.length'), 'rb'):
+for line in open(os.path.join(str(input_path), 'all.orfs.aa.length'), 'rb'):
     AA_Length.setdefault(str(line).split('\t')[0],float(str(line).split('\t')[2]))
     if args.AA_type == 0:
         ORFs_name.setdefault(str(line).split('\t')[0],
@@ -182,11 +196,10 @@ else:
 #input integron-like sequences extracted from the head of input data
 Warninglist=[]
 try:
-    for line in open(os.path.join(str(in_dir) + '/extract', args.head), 'r'):
+    for line in open(os.path.join(str(input_path) + '/extract', args.head), 'r'):
         Warninglist.append(str(line).split('\n')[0])
 except IOError:
     pass
-
 #only chromosome integron sequences are extracted by locus comparison, also can be checked by the chr.fa name in the sequence.
 #remove duplicated ones by locus comparison
 #Locus2+Distance >Len(record.seq) is okay, only extract sequence to the end
@@ -195,94 +208,82 @@ if args.func_type==0:
     Sequence_list=[]
     Extract_list=[]
     for line in open(Target_file,'r'):
-        File_list.append(str(line).split('\n')[0].split(str(args.fasta))[0]+str(args.fasta))
+        in_dir, input_file = os.path.split(line)
+        File_list.append(str(input_file).split('\n')[0].split(str(args.fasta))[0])
         if args.i>1:
-            Sequence_list.append(str(line).split('\n')[0].split(str(args.fasta)+'__')[1])
-    if File_list!=[]:
-        for line in open(Int_file,'rb'):
-            ORF=str(line).split('\t')[0]
-            for key in File_list:
-                #the relation between file name and ORF name
-                if key.split(args.fasta)[0] in ORF:
+            Sequence_list.append(str(line).split('\n')[0])
+    for line in open(Int_file,'rb'):
+        ORF=str(line).split('\t')[0]
+        for key in File_list:
+                if key in ORF:
                     if str(key) + str(args.fasta) + '__' + str(ORF) not in Extract_list:
-                        print str(key) + str(args.fasta) + '__' + str(ORF)
                         Extract_list.append(str(key) + str(args.fasta) + '__' + str(ORF))
                         if args.i>1:
                             if all(ORF not in Sequence for Sequence in Sequence_list):
                                 break
-                        Locus1 = int(ORFs_name.get(ORF, 'None')[0]) - 1
+                        Locus1 = int(ORFs_name.get(ORF,'None')[0]) - 1
                         Locus2 = int(ORFs_name.get(ORF, 'None')[1]) - 1
-                        if Locus1 > Locus2:
-                            Locustemp = Locus1
-                            Locus1 = Locus2
-                            Locus2 = Locustemp
+                        if Locus1 >Locus2:
+                            Locustemp=Locus1
+                            Locus1=Locus2
+                            Locus2=Locustemp
                         if args.i == 1:
                             if Locus1 >= Distance:
                                 Locus1 = Locus1 - Distance
                             else:
                                 Locus1 = 0
-                                fwarning = open(
-                                    os.path.join(str(in_dir) + '/extract', str(args.i) + '.warning.txt'),
-                                    'ab')
-                                fwarning.write(str(key + str(args.fasta)) + '__' + str(ORF) + '\n')
+                                fwarning=open(os.path.join(str(input_path)+'/extract', str(args.i)+'.warning.txt'),'ab')
+                                fwarning.write(str(key+str(args.fasta)) + '__' + str(ORF)+'\n')
                                 fwarning.close()
-                            Locus2 = Locus2 + Distance
-                            for record in SeqIO.parse(str(key), "fasta"):
-                                if record.id in str(ORF):
-                                    f1.write(">" + str(key) + str(args.fasta) + '__' + str(ORF) + \
-                                             '\t' + str(ORFs_anno.get(ORF, 'None')) + '\n')
-                                    f1.write(str(record.seq)[int(Locus1):int(Locus2)] + '\n')
+                            Locus2 = Locus2 + Distance + 1
+                            for record in SeqIO.parse(os.path.join(str(input_path), key+str(args.fasta)), "fasta"):
+                                f1.write(">" + str(key) +str(args.fasta)+ '__' + str(ORF) + \
+                                         '\t' + str(ORFs_anno.get(ORF, 'None')) + '\n')
+                                f1.write(str(record.seq)[int(Locus1):int(Locus2)] + '\n')
                         else:
                             if Locus1 >= 20000 + (int(args.i) - 1) * Distance:
                                 Locus1 = Locus1 - 20000 - (int(args.i) - 1) * Distance
                             else:
                                 Locus1 = 0
-                                fwarning = open(
-                                    os.path.join(str(in_dir) + '/extract', str(args.i) + '.warning.txt'), 'ab')
+                                fwarning = open(os.path.join(str(input_path)+'/extract', str(args.i)+'.warning.txt'),'ab')
                                 fwarning.write(str(key + str(args.fasta)) + '__' + str(ORF) + '\n')
                                 fwarning.close()
                             Locus2 = Locus2 + 20000 + (int(args.i) - 2) * Distance - 200
-                            for record in SeqIO.parse(str(key), "fasta"):
-                                if record.id in str(ORF):
-                                    if str(key + str(args.fasta)) + '__' + str(ORF) not in Warninglist:
-                                        f1.write(">" + str(key + str(args.fasta)) + '__' + str(ORF) + \
-                                                 '\t' + str(ORFs_anno.get(ORF, 'None')) + '\n')
-                                        f1.write(str(record.seq)[int(Locus1):int(Locus1 + Distance + 200)] + '\n')
-                                    else:
-                                        f1.write(">" + str(key + str(args.fasta)) + '__' + str(ORF) + \
-                                                 '\t' + str(ORFs_anno.get(ORF, 'None')) + '\n')
-                                        f1.write('\n')
-                                    f2.write(">" + str(key + str(args.fasta)) + '__' + str(ORF) + \
+                            for record in SeqIO.parse(os.path.join(str(input_path), key+str(args.fasta)), "fasta"):
+                                if str(key+str(args.fasta)) + '__' + str(ORF) not in Warninglist:
+                                    f1.write(">" + str(key+str(args.fasta)) + '__' + str(ORF) + \
                                              '\t' + str(ORFs_anno.get(ORF, 'None')) + '\n')
-                                    f2.write(str(record.seq)[int(Locus2):int(Locus2 + Distance + 200)] + '\n')
+                                    f1.write(str(record.seq)[int(Locus1):int(Locus1 + Distance + 201)] + '\n')
+                                else:
+                                    f1.write(">" + str(key + str(args.fasta)) + '__' + str(ORF) + \
+                                             '\t' + str(ORFs_anno.get(ORF, 'None')) + '\n')
+                                    f1.write('\n')
+                                f2.write(">" + str(key+str(args.fasta)) + '__' + str(ORF) + \
+                                         '\t' + str(ORFs_anno.get(ORF, 'None')) + '\n')
+                                f2.write(str(record.seq)[int(Locus2):int(Locus2 + Distance + 201)] + '\n')
 
-        f1.close()
-        if args.i!=1:
-            f2.close()
-            Cmlist=['extract/'+str(args.i)+'-1-Integrase_seq.fa','extract/'+str(args.i)+'-2-Integrase_seq.fa']
-            Cmsearch(Cmlist)
-        else:
-            Cmsearch(['extract/Finished_Integrase_seq.fa'])
-        cmd4='python scripts/attCformat.py -input extract\n'
-        cmd5='python scripts/Integrase_extraction_seq.py -i '+str(args.i)+' --func_type 1'+ \
-                 ' --fasta '+args.fasta+' --orf '+args.orf+ ' --AA_type '+str(args.AA_type)+' --outputdir '+\
-             str(args.outputdir)+' --head '+str(args.i)+'.warning.txt\n'
-        print cmd4
-        print cmd5
-        os.system(cmd4)
-        os.system(cmd5)
+    f1.close()
+    if args.i!=1:
+        f2.close()
+        Cmlist=[str(input_path)+'/extract/'+str(args.i)+'-1-Integrase_seq.fa',str(input_path)+'/extract/'+str(args.i)+'-2-Integrase_seq.fa']
+        Cmsearch(Cmlist)
     else:
-        cmd7='python scripts/Integrase_extraction_seq.py --fasta '+str(args.fasta)+' --func_type 2'+ \
-             ' --fasta '+args.fasta+' --orf '+args.orf+ ' --AA_type '+str(args.AA_type)+' --outputdir '\
-             +str(args.outputdir)+' --head '+str(args.i)+'.warning.txt\n'
-        print cmd7
-        os.system(cmd7)
+        Cmsearch([str(input_path)+'/extract/Finished_Integrase_seq.fa'])
+    cmd4 = 'python scripts/attCformat.py -input ' + str(input_path) + '/extract\n'
+    cmd5 = 'python scripts/Integrase_extraction_seq.py -input ' + str(input_path) + ' -i ' + str(
+        args.i) + ' --func_type 1' + \
+           ' --fasta ' + args.fasta + ' --orf ' + args.orf + ' --AA_type ' + str(args.AA_type) + ' --outputdir ' + \
+           str(args.outputdir) + ' --head ' + str(args.i) + '.warning.txt\n'
+    print cmd4
+    print cmd5
+    os.system(cmd4)
+    os.system(cmd5)
 elif args.func_type == 1:
-    Sequence_list=[]
-    f3=open(os.path.join('extract', str(args.i)+'-Target.txt'), 'wb')
+    Sequence_list = []
+    f3 = open(os.path.join(str(input_path) + '/extract', str(args.i) + '-Target.txt'), 'ab')
     if args.i == 1:
-        f1 = open(os.path.join('extract', str(File_attC).replace('txt2.txt', 'new.txt2.txt')), 'wb')
-        for line in open(os.path.join('extract', str(File_attC)), 'rb'):
+        f1 = open(os.path.join(str(input_path) + '/extract', str(File_attC).replace('txt2.txt', 'new.txt2.txt')), 'ab')
+        for line in open(os.path.join(str(input_path) + '/extract', str(File_attC)), 'rb'):
             Long_integron_1(str(line), Sequence_list)
             for line1 in open(Int_file, 'rb'):
                 ORF = str(line1).split('\t')[0]
@@ -295,9 +296,9 @@ elif args.func_type == 1:
                              str(line).split('\t')[9] + '\t' + '\t'.join(
                         str(line).split('\t')[10:]))
     else:
-        f1 = open(os.path.join('extract', str(File_attC1).replace('txt2.txt', 'new.txt2.txt')), 'wb')
-        f2 = open(os.path.join('extract', str(File_attC2).replace('txt2.txt', 'new.txt2.txt')), 'wb')
-        for line in open(os.path.join('extract', str(File_attC1)), 'rb'):
+        f1 = open(os.path.join(str(input_path) + '/extract', str(File_attC1).replace('txt2.txt', 'new.txt2.txt')), 'ab')
+        f2 = open(os.path.join(str(input_path) + '/extract', str(File_attC2).replace('txt2.txt', 'new.txt2.txt')), 'ab')
+        for line in open(os.path.join(str(input_path) + '/extract', str(File_attC1)), 'rb'):
             Long_integron_2(str(line), Sequence_list)
             for line1 in open(Int_file, 'rb'):
                 ORF = str(line1).split('\t')[0]
@@ -316,7 +317,7 @@ elif args.func_type == 1:
                         except ValueError:
                             pass
 
-        for line in open(os.path.join('extract', str(File_attC2)), 'rb'):
+        for line in open(os.path.join(str(input_path) + '/extract', str(File_attC2)), 'rb'):
             Long_integron_2(str(line), Sequence_list)
             for line1 in open(Int_file, 'rb'):
                 ORF = str(line1).split('\t')[0]
@@ -338,29 +339,33 @@ elif args.func_type == 1:
     f1.close()
     for key in Sequence_list:
         if key not in Warninglist:
-            f3.write(str(key)+'\n')
-            Sequence_list.remove(key)
+            f3.write(str(key) + '\n')
     f3.close()
-    if Sequence_list!=[]:
-        cmd6='python scripts/Integrase_extraction_seq.py -i '+str(int(args.i)+1)+' -input '+\
-             str(args.input)+' -target extract/'+str(args.i)+'-Target.txt --fasta '+str(args.fasta)+' --func_type 0'+ \
-             ' --fasta '+args.fasta+' --orf '+args.orf+ ' --AA_type '+str(args.AA_type)+' --outputdir '\
-             +str(args.outputdir)+' --head '+str(args.i)+'.warning.txt\n'
+    if Sequence_list != []:
+        cmd6 = 'python scripts/Integrase_extraction_seq.py -input ' + str(input_path) + ' -i ' + str(
+            int(args.i) + 1) + \
+               ' -target ' + str(input_path) + '/extract/' + str(args.i) + '-Target.txt --fasta ' + str(
+            args.fasta) + ' --func_type 0' + \
+               ' --fasta ' + args.fasta + ' --orf ' + args.orf + ' --AA_type ' + str(args.AA_type) + ' --outputdir ' \
+               + str(args.outputdir) + ' --head ' + str(args.i) + '.warning.txt\n'
         print cmd6
         os.system(cmd6)
     else:
-        cmd7='python scripts/Integrase_extraction_seq.py --fasta '+str(args.fasta)+' --func_type 2'+ \
-             ' --fasta '+args.fasta+' --orf '+args.orf+ ' --AA_type '+str(args.AA_type)+' --outputdir '\
-             +str(args.outputdir)+' --head '+str(args.i)+'.warning.txt\n'
+        cmd7 = 'python scripts/Integrase_extraction_seq.py -input ' + str(input_path) + ' --fasta ' + str(
+            args.fasta) + ' --func_type 2' + \
+               ' --fasta ' + args.fasta + ' --orf ' + args.orf + ' --AA_type ' + str(args.AA_type) + ' --outputdir ' \
+               + str(args.outputdir) + ' --head ' + str(args.i) + '.warning.txt\n'
         print cmd7
         os.system(cmd7)
 else:
     for Attc_file in Attc_file_name:
-        for line in open(Attc_file,'r'):
-            print os.path.join(args.outputdir,str(line).split(args.fasta)[0]+str(args.fasta)+'.Z.max.attc.hits.txt2.txt')
-            f1=open(os.path.join(args.outputdir,str(line).split(args.fasta)[0]+str(args.fasta)+'.Z.max.attc.hits.txt2.txt'),'ab')
+        for line in open(Attc_file, 'r'):
+            f1 = open(os.path.join(args.outputdir,
+                                   str(line).split(args.fasta)[0] + str(args.fasta) + '.Z.max.attc.hits.txt2.txt'),
+                      'ab')
             f1.write(str(line))
             f1.close()
+
 
 
 
