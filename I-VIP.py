@@ -142,11 +142,14 @@ def filter_blast_list(file, Cutoff_identity, Cutoff_hitlength):
 
 def Extractaa(AA_seq,root,searchfile,gene):
     f1=open(os.path.join(root,'all.'+str(gene)+'.aa'),'wb')
-    for line in open(searchfile,'rb'):
-        try:
-            f1.write('>'+str(line).split('\t')[0].split(' ')[0]+'\n'+str(AA_seq[str(line).split('\t')[0].split(' ')[0]])+'\n')
-        except KeyError:
-            print 'AA not found for '+str(line).split('\t')[0].split(' ')[0]
+    try:
+        for line in open(searchfile,'rb'):
+            try:
+                f1.write('>'+str(line).split('\t')[0].split(' ')[0]+'\n'+str(AA_seq[str(line).split('\t')[0].split(' ')[0]])+'\n')
+            except KeyError:
+                print 'AA not found for '+str(line).split('\t')[0].split(' ')[0]
+    except IOError:
+        print 'No output for '+'all.'+str(gene)+'.aa'
     f1.close()
 
 
@@ -218,8 +221,9 @@ else:
     os.system(cmd3)
 print 'Step3 Finished: search for attC'
 #Step4 Integron combination
-cmd4='python scripts/Result_Combine_seq.py --fasta '+str(args.fasta)+' --distance '+str(args.distance)+\
-     ' --AA_type '+str(args.orftype)+' --attc_evalue '+str(args.cutoff) +' --orf '+ str(args.orf) +'\n'
+cmd4='python scripts/Result_Combine_seq.py -input_format '+str(args.fasta)+' -orf '+str(args.orf)+\
+     ' --distance '+str(args.distance)+\
+     ' --AA_type '+str(args.orftype)+' --attc_evalue '+str(args.cutoff)  +'\n'
 print cmd4
 os.system(cmd4)
 print 'Step4 Finished: integron identification and classification'
@@ -229,7 +233,4 @@ cmd5='python scripts/Integron_extraction_seq.py  --AA_format '+str(args.orftype)
 os.system(cmd5)
 print cmd5
 print 'Step5 Finished: integron extraction'
-
-
-
 
