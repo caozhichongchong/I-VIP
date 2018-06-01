@@ -1,0 +1,4 @@
+filename	organism_name	assembly_level	phylum	class	order	family	genus	species	strain	Pathogenity
+GCA_002853455.1	Klebsiella pneumoniae subsp. ozaenae	Scaffold	Proteobacteria	Gammaproteobacteria	Enterobacterales	Enterobacteriaceae	Klebsiella	Klebsiella pneumoniae	Klebsiella pneumoniae subsp. ozaenae	TRUE
+GCA_002202235.1	Klebsiella pneumoniae	Complete Genome	Proteobacteria	Gammaproteobacteria	Enterobacterales	Enterobacteriaceae	Klebsiella	Klebsiella	Klebsiella pneumoniae	TRUE
+

@@ -452,7 +452,7 @@ else:
                       'ab')
             f1.write(str(line))
             f1.close()
-    # os.system('-rm -rf ' +str(input_path)+'/extract \n')
+    os.system('rm -rf ' +str(input_path)+'/extract \n')
     print 'ModuleA2.py finished!'
     flog.write('Finished preparation!!\n')
     flog.close()

@@ -321,7 +321,7 @@ def write_integrase(key, LocusORF1, LocusORF2, i, f, record, end, file):
     if end == 'None':
         for locusint in key.intlocus:
             # find the integrase annotation for the ORF
-            if locusint-5 <= (LocusORF1+LocusORF2)/2 <= locusint+5:
+            if locusint-10 <= (LocusORF1+LocusORF2)/2 <= locusint+10:
                 # find the right integrase
                 # integrase name: integron_id (key.name) + ':' + number_of_ORF_on_integron (i)
                 # output integrase annotation 1. key.intanno2.get(locusint) is previously imported from genbank
@@ -382,15 +382,14 @@ def write_structure(key,Locus,i,f,Tag,temp):
 
 
 def compare_structure(key, Locusmean, i, f, f4temp, Tag):
+    # output the structure of ORF and empty the temp list of structure
+    if f4temp != '':
+        write_structure(key, Locusmean, i, f, Tag, f4temp)
+    # format output for ORF
+    f4temp = str(key.type) + '\t' + str(key.name) + ':' + str(i) + '\t' + str(Tag) + '\t' + str(
+        Locusmean) + '\n'
     # adjust the structure of ORFs with attC
     try:
-        # output the structure of ORF and empty the temp list of structure
-        if f4temp != '':
-            write_structure(key, Locusmean, i, f, Tag, f4temp)
-            f4temp = ''
-        # format output for ORF
-        f4temp = str(key.type) + '\t' + str(key.name) + ':' + str(i) + '\t' + str(Tag) + '\t' + str(
-            Locusmean) + '\n'
         # a temp list to remove attC that has been output
         templist = copy.deepcopy(key.attclocus)
         locusattc = key.attclocus[0]
@@ -492,7 +491,7 @@ def extract_ORFs(file,key,AA_format):
                             Beforetemp1 = write_forward(key, Beforetemp1,  Beforelength1,  f1, f3,
                                                         f4, file)
                         # start writing ORFs in the middle
-                        if any(locussulI - 5 <= Locusmean <= locussulI + 5 for locussulI in key.sul1locus):
+                        if any(locussulI - 10 <= Locusmean <= locussulI + 10 for locussulI in key.sul1locus):
                             # if the ORF is sul1
                             Tag = 'SulI'
                         else:
@@ -529,6 +528,23 @@ def extract_ORFs(file,key,AA_format):
                             break
                         #extend integron range
                         key.changeL2(max(LocusORF1, LocusORF2))
+            elif Aftertemp >= 0 and str(Beforetemp1) == '':
+                # integron structure at the end of the last sequence
+                # write all afterward ORFs and attC
+                if f4temp != '':
+                    f4temp = write_structure(key, Locusmean, '+1', f4, 'None', f4temp)
+                    # write all remaining ORFs after attC
+                try:
+                    # write all remaining attC sites
+                    locusattc = key.attclocus[0]
+                    for locusattc in key.attclocus:
+                        write_structure(key, locusattc, '+1', f4, 'attC', 'None')
+                    key.attclocus = []
+                    break
+                except IndexError:
+                    pass
+                Aftertemp = -1
+                break
     f1.close()
     f3.close()
     f4.close()

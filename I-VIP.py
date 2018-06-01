@@ -46,10 +46,10 @@ parser.add_argument('--c',
 parser.add_argument('--m',
                     help="Optional: set the search strategies for Module A \
                     (1: global search by Module A1; 2: local search by Module A2), \
-                    (default \'1\' for global search)",
+                    (default \'2\' for local search)",
                     metavar="1 or 2",
                     choices=[1, 2],
-                    action='store', default=1, type=int)
+                    action='store', default=2, type=int)
 parser.add_argument('--q',
                     help="Optional: attC search setting \
                     (from least strict to most strict: \'max\', \'nohmm\', \'mid\', \'\', \'rfam\'),\
@@ -65,7 +65,7 @@ parser.add_argument('--t',
 parser.add_argument("--tx",
                     help="Optional: a file of taxonomy metadata (under your input folder)",
                     type=str, default='None',
-                    metavar='genbank_taxon.txt or None')
+                    metavar='taxon.txt or None')
 parser.add_argument("--tc",
                     help="Optional: column number corresponding to the taxonomy, i.e., from phylum to strain",
                     type=str, default='None',
@@ -77,7 +77,7 @@ parser.add_argument('--u',
                          (complete path to usearch or diamond if not in PATH, \
                          please make sure the search tools can be directly called), (default: \'None\')",
                     metavar="None or usearch",
-                    action='store', default='usearchv8', type=str)
+                    action='store', default='None', type=str)
 parser.add_argument('--cmsearch',
                     help="Optional: complete path to cmsearch if not in PATH,",
                     metavar="/usr/local/bin/cmsearch",
@@ -99,6 +99,7 @@ in_dir= os.path.abspath(args.i)
 print [args.f, any (format in args.f for format in ['gbff','gbff.gz'])]
 if any (format in args.f for format in ['gbff','gbff.gz']):
     os.system('python scripts/GbffParser.py -i ' + str(in_dir) + ' -f ' + str(args.f) + ' \n')
+    print 'python scripts/GbffParser.py -i ' + str(in_dir) + ' -f ' + str(args.f) + ' \n'
     input_extension='.fa'
     orf_extension='.faa'
     genbank = in_dir
@@ -230,7 +231,7 @@ else:
         cmd5 = ''
     cmd5 += 'python scripts/Integron_annotation.py -i ' + str(in_dir) + ' -f ' + \
                str(args.f) + ' --r ' + str(args.r) + ' --a ' + str(args.a) \
-            + ' --t ' + str(args.t) + ' --tx ' + str(args.tx) + ' --blastp ' + str(args.blastp) +'\n'
+            + ' --t ' + str(args.t) + ' --tx ' + str(args.tx) + '.norm --blastp ' + str(args.blastp) +'\n'
     print cmd5
     flog.write(cmd5)
     os.system(cmd5)
@@ -239,14 +240,14 @@ else:
     os.system('rm -rf Temp \n')
     # Step6 Integron visualization
     cmd6 = 'python scripts/Visualization.py -i ' + str(in_dir) + ' --tc ' + \
-               str(args.tc) + ' --tx ' + str(args.tx) + ' --r ' + \
+               str(args.tc) + ' --tx ' + str(args.tx) + '.norm --r ' + \
            str(args.r) + ' --ot ' + str(args.r) + '/Temp/all.orf.length \n'
     print cmd6
     flog.write(cmd6)
     os.system(cmd6)
     print 'Step6 Finished: integron visualization\n'
     flog.write('Step6 Finished: integron visualization\n')
-    # os.system('rm -rf ' + str(args.r) +  '\Temp \n')
+    os.system('rm -rf ' + str(args.r) +  '/Temp \n')
 flog.close()
 
 

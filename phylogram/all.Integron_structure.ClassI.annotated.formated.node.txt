@@ -1,0 +1,31 @@
+Node	Shape	Label	Labelcolor	Color	Length
+Bacteria	taxon	Bacteria	black	None	50
+Proteobacteria_3	taxon	Proteobacteria_3	black	Gammaproteobacteria_4	50
+Gammaproteobacteria_4	taxon	Gammaproteobacteria_4	black	Gammaproteobacteria_4	50
+Enterobacterales_5	taxon	Enterobacterales_5	black	Gammaproteobacteria_4	50
+Enterobacteriaceae_6	taxon	Enterobacteriaceae_6	black	Gammaproteobacteria_4	50
+Klebsiella_7	taxon	Klebsiella_7	black	Gammaproteobacteria_4	50
+Klebsiella pneumoniae_8	taxon	Klebsiella pneumoniae_8	black	Gammaproteobacteria_4	50
+Klebsiella pneumoniae subsp. ozaenae_9_A	A		A	A	50
+Klebsiella pneumoniae subsp. ozaenae_9	taxon	subsp. ozaenae_9	red	Gammaproteobacteria_4	50
+['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:1', 'IntI1', '36363.0']	 IntI1		black	 IntI1	100
+['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:2', 'ORF', '37438.5', 'DQ303918.1.gene1.p01', "aminoglycoside__aac(6')-I", 'aminoglycoside']	ARG	Ami	black	Ami	100
+['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:attC', 'attC', '37746.5']	 attC		black	 attC	50
+['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:3', 'ORF', '38261.5', 'AAA91586', 'beta-lactam__OXA-1', 'beta-lactam']	ARG	Beta	black	Beta	100
+['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:attC', 'attC', '38741.5']	 attC		black	 attC	50
+['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:4', 'ORF', '39130.5', 'AY259086.1.gene4.p01', 'chloramphenicol__catB', 'chloramphenicol']	ARG	Cho	black	Cho	100
+['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:attC', 'attC', '39471.5']	 attC		black	 attC	50
+['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:5', 'ORF', '39757.5', 'AY259086.1.gene5.p01', 'rifamycin__ADP-ribosylating transferase_arr', 'rifamycin']	ARG	Rif	black	Rif	100
+['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:attC', 'attC', '40047.5']	 attC		black	 attC	50
+['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:6', 'ORF', '40380.0']	 ORF		black	 ORF	100
+['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:7', 'SulI', '40967.0', 'AF191564.1.gene5.p01', 'sulfonamide__sul1', 'sulfonamide']	 SulI		black	 SulI	100
+['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:1', 'SulI', '6782.5', 'AF191564.1.gene5.p01', 'sulfonamide__sul1', 'sulfonamide']	 SulI		black	 SulI	100
+['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:2', 'ORF', '7369.5']	 ORF		black	 ORF	100
+['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:attC', 'attC', '7675.5']	 attC		black	 attC	50
+['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:3', 'ORF', '8082.5', 'EU675686.2.gene5.p01', 'aminoglycoside__aadA', 'aminoglycoside']	ARG	Ami	black	Ami	100
+['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:4', 'ORF', '8798.0']	 ORF		black	 ORF	100
+['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:attC', 'attC', '9228.5']	 attC		black	 attC	50
+['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:5', 'ORF', '9518.0', 'AY259086.1.gene5.p01', 'rifamycin__ADP-ribosylating transferase_arr', 'rifamycin']	ARG	Rif	black	Rif	100
+['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:attC', 'attC', '9810.5']	 attC		black	 attC	50
+['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:6', 'ORF', '10140.5', 'DQ303918.1.gene1.p01', "aminoglycoside__aac(6')-I", 'aminoglycoside']	ARG	Ami	black	Ami	100
+['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:7', 'IntI1', '11094.5']	 IntI1		black	 IntI1	100

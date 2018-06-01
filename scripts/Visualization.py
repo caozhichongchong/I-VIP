@@ -54,19 +54,20 @@ def node_add(node,shape,label,labelcolor,color,length):
     f1.write(str(node)+'\t'+str(shape)+'\t'+str(label)+'\t'+str(labelcolor)+'\t'+str(color)+'\t'+str(length)+'\n')
 
 
-
 def edge_add(node1,node2,edgetype,color,length):
     f1 = open(os.path.join(resultdir, str(anno_file).replace('.txt','.edge.txt')), 'ab')
     f1.write(str(node1) + '\t' + str(node2) + '\t' + str(edgetype) + '\t' + str(color)+ '\t' + str(length) + '\n')
 
 
 def pathogen(taxa):
-    if any(key.split('\r')[0].split('\n')[0] in Pathogen for key in taxa):
-        # for potential human pathogens, set the label color to red
-        return 'red'
-    else:
-        # for non-pathogens, set the label color to black
-        return 'black'
+    for taxaname in taxa:
+        if any(str(key).lower() in taxaname.lower() for key in Pathogen):
+            # for potential human pathogens, set the label color to red
+            return 'red'
+        else:
+            pass
+            # for non-pathogens, set the label color to black
+    return 'black'
 
 
 def network(line,nodetable,edgetable,Repli,Taxon):
@@ -94,7 +95,7 @@ def network(line,nodetable,edgetable,Repli,Taxon):
                     Integron_type = str(line).split('\t')[0]
                     Type_node = str(node1 + '_' + Integron_type)
                     # set the label color as red if the host is a pathogen, black for non-pathogen
-                    labelcolor = pathogen(str(line).split('\t')[(c2 - 3):(c2 - 1)])
+                    labelcolor = pathogen(str(line).split('\t')[(c2 - 3):(c2)])
                     # add edge for the integron type
                     if str(node1) + '-' + str(Type_node) not in edgetable and node1 != '':
                         # edge color as the class taxonomy
@@ -103,8 +104,8 @@ def network(line,nodetable,edgetable,Repli,Taxon):
                     # add node for the integron type
                     if str(Type_node) not in nodetable:
                         node_add(Type_node, Integron_type,
-                                 Integron_type, Integron_type
-                                 , Integron_type, 70)
+                                 '', Integron_type
+                                 , Integron_type, 50)
                         nodetable.append(Type_node)
                 else:
                     # for the taxonomy from class to species level
@@ -124,8 +125,8 @@ def network(line,nodetable,edgetable,Repli,Taxon):
                         edge_add(str(node1), str(node2), 'taxon', str(line).split('\t')[c1], 1)
                         edgetable.append(str(node1) + '-' + str(node2))
         except IndexError:
-            print 'Wrong input for --tc \nPlease input in the format of: start column number, end column number\n"\
-                                  "Example: 2,8\nProceed without taxonomy information\n'
+            print "Wrong input for --tc \nPlease input in the format of: start column number, end column number\n"
+            print  "For example: 2,8\nProceed without taxonomy information\n"
             # no taxonomy information
             # connect the integron to the same node
             node1 = 'Phylogram'
@@ -140,8 +141,8 @@ def network(line,nodetable,edgetable,Repli,Taxon):
             # add node for the integron type
             if Type_node not in nodetable:
                 node_add(Type_node, Integron_type,
-                         Integron_type, Integron_type
-                         , Integron_type, 70)
+                         '', Integron_type
+                         , Integron_type, 50)
                 nodetable.append(Type_node)
     else:
         # no taxonomy information
@@ -158,8 +159,8 @@ def network(line,nodetable,edgetable,Repli,Taxon):
         # add node for the integron type
         if Type_node not in nodetable:
             node_add(Type_node, Integron_type,
-                     Integron_type, Integron_type
-                     , Integron_type, 70)
+                     '', Integron_type
+                     , Integron_type, 50)
             nodetable.append(Type_node)
     # add the integron to the phylogram
     # set integron direction
@@ -277,12 +278,19 @@ def network(line,nodetable,edgetable,Repli,Taxon):
                         # shorten the ARG phenotype label
                         if Label in ARG_shortname:
                             Label = ARG_shortname[Label]
+                            Color = Label
+                        else:
+                            Label = ''
+                            Color = Type
                     else:
                         # for integrases, sul1 and attC
-                        Label = Type
-                    Color = Label
+                        Label = ''
+                        Color=Type
                     # add the integron node
-                    node_add(key, Type, Label, 'black', Color, ORFs_name.get(integron_element_name, 100))
+                    if Type.replace(' ','') == 'attC':
+                        node_add(key, Type, Label, 'black', Color, 50)
+                    else:
+                        node_add(key, Type, Label, 'black', Color, 100)
                     if Lastkey != '':
                         # add edge for integron structure
                         if (SulIlocus != 0 and Intlocus != 0 and Intlocus <= SulIlocus) or (
@@ -305,16 +313,16 @@ def netword_add(Repli):
     # output the number of occurrence for replicated integrons
     for Repli_node in Repli:
         if Repli[Repli_node][0] > 1:
-            node_add(Repli_node, 'Occurrence', '*'+str(Repli[Repli_node][0]), 'yellow', 'Occurrence', 500+Repli[Repli_node][0]*10)
+            node_add(Repli_node, 'Occurrence', '*'+str(Repli[Repli_node][0]), 'yellow', 'Occurrence', 150)
             edge_add(Repli[Repli_node][1], Repli_node, 'Occurrence', 'Occurrence', 0)
 
 
 ################################################### Programme #######################################################
 # load ORF length information
-ORFs_name=dict()
-for line in open(args.ot,'rb'):
-    ORFs_name.setdefault(str(line).split('\t')[0],
-                         abs(float(str(line).split('\t')[-3]) - float(str(line).split('\t')[-2])))
+#ORFs_name=dict()
+#for line in open(args.ot,'rb'):
+#    ORFs_name.setdefault(str(line).split('\t')[0],
+#                         abs(float(str(line).split('\t')[-3]) - float(str(line).split('\t')[-2])))
 # shorten the ARG phenotype name for display
 ARG_shortname=dict()
 for line in open('database/ARG_shortname.txt','rb'):

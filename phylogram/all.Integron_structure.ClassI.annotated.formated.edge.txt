@@ -1,0 +1,30 @@
+Node1	Node2	Type	Color	Length
+Bacteria	Proteobacteria_3	taxon	Gammaproteobacteria_4	1
+Proteobacteria_3	Gammaproteobacteria_4	taxon	Gammaproteobacteria_4	1
+Gammaproteobacteria_4	Enterobacterales_5	taxon	Gammaproteobacteria_4	1
+Enterobacterales_5	Enterobacteriaceae_6	taxon	Gammaproteobacteria_4	1
+Enterobacteriaceae_6	Klebsiella_7	taxon	Gammaproteobacteria_4	1
+Klebsiella_7	Klebsiella pneumoniae_8	taxon	Gammaproteobacteria_4	1
+Klebsiella pneumoniae_8	Klebsiella pneumoniae subsp. ozaenae_9	taxon	Gammaproteobacteria_4	1
+Klebsiella pneumoniae subsp. ozaenae_9	Klebsiella pneumoniae subsp. ozaenae_9_A	taxon	Gammaproteobacteria_4	1
+Klebsiella pneumoniae subsp. ozaenae_9_A	['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:1', 'IntI1', '36363.0']	structure	None	10
+['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:1', 'IntI1', '36363.0']	['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:2', 'ORF', '37438.5', 'DQ303918.1.gene1.p01', "aminoglycoside__aac(6')-I", 'aminoglycoside']	structure	None	10
+['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:2', 'ORF', '37438.5', 'DQ303918.1.gene1.p01', "aminoglycoside__aac(6')-I", 'aminoglycoside']	['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:attC', 'attC', '37746.5']	structure	None	10
+['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:attC', 'attC', '37746.5']	['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:3', 'ORF', '38261.5', 'AAA91586', 'beta-lactam__OXA-1', 'beta-lactam']	structure	None	10
+['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:3', 'ORF', '38261.5', 'AAA91586', 'beta-lactam__OXA-1', 'beta-lactam']	['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:attC', 'attC', '38741.5']	structure	None	10
+['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:attC', 'attC', '38741.5']	['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:4', 'ORF', '39130.5', 'AY259086.1.gene4.p01', 'chloramphenicol__catB', 'chloramphenicol']	structure	None	10
+['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:4', 'ORF', '39130.5', 'AY259086.1.gene4.p01', 'chloramphenicol__catB', 'chloramphenicol']	['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:attC', 'attC', '39471.5']	structure	None	10
+['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:attC', 'attC', '39471.5']	['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:5', 'ORF', '39757.5', 'AY259086.1.gene5.p01', 'rifamycin__ADP-ribosylating transferase_arr', 'rifamycin']	structure	None	10
+['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:5', 'ORF', '39757.5', 'AY259086.1.gene5.p01', 'rifamycin__ADP-ribosylating transferase_arr', 'rifamycin']	['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:attC', 'attC', '40047.5']	structure	None	10
+['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:attC', 'attC', '40047.5']	['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:6', 'ORF', '40380.0']	structure	None	10
+['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:6', 'ORF', '40380.0']	['GCA_002202235.1.fa_GCA_002202235.1_CP021947.1:1:7', 'SulI', '40967.0', 'AF191564.1.gene5.p01', 'sulfonamide__sul1', 'sulfonamide']	structure	None	10
+Klebsiella pneumoniae subsp. ozaenae_9_A	['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:7', 'IntI1', '11094.5']	structure	None	10
+['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:2', 'ORF', '7369.5']	['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:1', 'SulI', '6782.5', 'AF191564.1.gene5.p01', 'sulfonamide__sul1', 'sulfonamide']	structure	None	10
+['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:attC', 'attC', '7675.5']	['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:2', 'ORF', '7369.5']	structure	None	10
+['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:3', 'ORF', '8082.5', 'EU675686.2.gene5.p01', 'aminoglycoside__aadA', 'aminoglycoside']	['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:attC', 'attC', '7675.5']	structure	None	10
+['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:4', 'ORF', '8798.0']	['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:3', 'ORF', '8082.5', 'EU675686.2.gene5.p01', 'aminoglycoside__aadA', 'aminoglycoside']	structure	None	10
+['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:attC', 'attC', '9228.5']	['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:4', 'ORF', '8798.0']	structure	None	10
+['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:5', 'ORF', '9518.0', 'AY259086.1.gene5.p01', 'rifamycin__ADP-ribosylating transferase_arr', 'rifamycin']	['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:attC', 'attC', '9228.5']	structure	None	10
+['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:attC', 'attC', '9810.5']	['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:5', 'ORF', '9518.0', 'AY259086.1.gene5.p01', 'rifamycin__ADP-ribosylating transferase_arr', 'rifamycin']	structure	None	10
+['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:6', 'ORF', '10140.5', 'DQ303918.1.gene1.p01', "aminoglycoside__aac(6')-I", 'aminoglycoside']	['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:attC', 'attC', '9810.5']	structure	None	10
+['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:7', 'IntI1', '11094.5']	['GCA_002853455.1.fa_GCA_002853455.1_NWFE01000034.1:1:6', 'ORF', '10140.5', 'DQ303918.1.gene1.p01', "aminoglycoside__aac(6')-I", 'aminoglycoside']	structure	None	10

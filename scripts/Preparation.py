@@ -122,23 +122,6 @@ def Extractaa(root, searchfile, orffile, gene):
 
 
 def searchintsul(filename):
-    # check integrase and sul1 databases
-    try:
-        f1 = open('database/Integrase.fasta.phr','rb')
-        f1.close()
-    except IOError:
-        # make database
-        blastpath, blastcom = os.path.split(args.blastp)
-        os.system(os.join(blastpath,'makeblastdb  -in database/Integrase.fasta -dbtype prot \n'))
-        os.system(os.join(blastpath, 'makeblastdb  -in database/sul1_database.txt -dbtype prot \n'))
-        os.system(os.join(blastpath, 'makeblastdb  -in database/MRG.db.fasta -dbtype prot \n'))
-        os.system(os.join(blastpath, 'makeblastdb  -in database/SARG.db.fasta -dbtype prot \n'))
-        if 'diamond' in args.u:
-            diamondpath, diamondcom = os.path.split(args.u)
-            os.system(os.join(diamondpath, 'diamond makedb  -d database/Integrase.fasta \n'))
-            os.system(os.join(diamondpath, 'diamond makedb  -d database/sul1_database.txt -dbtype prot \n'))
-            os.system(os.join(diamondpath, 'diamond makedb  -d database/MRG.db.fasta \n'))
-            os.system(os.join(diamondpath, 'diamond makedb  -d database/SARG.db.fasta -dbtype prot \n'))
     # search integrase and sul1 for each file
     if args.u != 'None':
         # two-step search
@@ -152,12 +135,12 @@ def searchintsul(filename):
                     + args.r + "/Temp/"+filename+".sul1.usearch.txt -threads " + str(args.t) + "\n"
         elif "diamond" in args.u:
             # Start search integrase and sul1 genes by diamond!
-            cmdint1 = str(args.u) +" blastp -query " + args.r + "/Temp/"+filename + \
-                      " -db database/Integrase.fasta -out " + args.r + "/Temp/"+filename+\
-                      ".int.usearch.txt -outfmt 6 -max_target_seqs 1 -evalue 1e-2 -num_threads " + str(args.t) + " \n"
-            cmdsulI1 = str(args.u) +" blastp -query " + args.r + "/Temp/"+filename + \
-                      " -db database/sul1_database.txt -out " + args.r + "/Temp/"+filename+\
-                      ".sul1.usearch.txt -outfmt 6 -max_target_seqs 1 -evalue 1e-2 -num_threads " + str(args.t) + " \n"
+            cmdint1 = str(args.u) +" blastp --query " + args.r + "/Temp/"+filename + \
+                      " --db database/Integrase.fasta --out " + args.r + "/Temp/"+filename+\
+                      ".int.usearch.txt --outfmt 6 --max-target-seqs 1 --evalue 1e-2 --threads " + str(args.t) + " \n"
+            cmdsulI1 = str(args.u) +" blastp --query " + args.r + "/Temp/"+filename + \
+                      " --db database/sul1_database.txt --out " + args.r + "/Temp/"+filename+\
+                      ".sul1.usearch.txt --outfmt 6 --max-target-seqs 1 --evalue 1e-2 --threads " + str(args.t) + " \n"
         os.system(cmdint1)
         os.system(cmdsulI1)
         Int_file = Extractaa( args.r + '/Temp', filename+".int.usearch.txt", filename,'int')

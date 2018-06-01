@@ -34,36 +34,37 @@ def normalize(f1,f2):
     # correct "NA" taxonamy into "the taxonomy in a higher level" + "_" + "taxonomy_level"
     for line in f1:
         try:
-            newline='\t'.join(str(line).split('\t')[0:(c1-1)])
-            for i in range((c1-1),(c2)):
-                if str(line).split('\t')[i].split('\r')[0].split('\n')[0] not in ['NA','','None'] \
-                       and 'environmental samples' not in str(line).split('\t')[i].split('\r')[0].split('\n')[0]:
-                    newline+='\t'+str(line).split('\t')[i].split('\r')[0].split('\n')[0] + '_' + str(i)
-                else:
-                    if c1==i: # replace 'NA', 'None' or empty annotation at the phylum (lowest taxonomy level)
-                        if str(line).split('\t')[(c1-1)].split('\r')[0].split('\n')[0] in ['NA','','None'] \
-                       or 'environmental samples' in str(line).split('\t')[(c1-1)].split('\r')[0].split('\n')[0]:
+            if line.split('\r')[0].split('\n')[0]!='':
+                newline='\t'.join(str(line).split('\t')[0:(c1-1)])
+                for i in range((c1-1),(c2)):
+                    if str(line).split('\t')[i].split('\r')[0].split('\n')[0] not in ['NA','','None'] \
+                           and 'environmental samples' not in str(line).split('\t')[i].split('\r')[0].split('\n')[0]:
+                        newline+='\t'+str(line).split('\t')[i].split('\r')[0].split('\n')[0] + '_' + str(i)
+                    else:
+                        if c1==i: # replace 'NA', 'None' or empty annotation at the phylum (lowest taxonomy level)
+                            if str(line).split('\t')[(c1-1)].split('\r')[0].split('\n')[0] in ['NA','','None'] \
+                           or 'environmental samples' in str(line).split('\t')[(c1-1)].split('\r')[0].split('\n')[0]:
+                                newline += '\tunclassified Bacteria_' + str(i)
+                            else:
+                                newline += '\t' + str(line).split('\t')[(c1 - 1)].split('\r')[0].split('\n')[0]\
+                                           + '_' + str(i)
+                        elif c1-1==i:
                             newline += '\tunclassified Bacteria_' + str(i)
                         else:
-                            newline += '\t' + str(line).split('\t')[(c1 - 1)].split('\r')[0].split('\n')[0]\
-                                       + '_' + str(i)
-                    elif c1-1==i:
-                        newline += '\tunclassified Bacteria_' + str(i)
-                    else:
-                        Out=False
-                        for j in reversed(range((c1-1), i)):  # replace 'NA', 'None' or empty annotation
-                            if str(line).split('\t')[j].split('\r')[0].split('\n')[0] not in ['NA','','None'] and \
-                                    'environmental samples' not in str(line).split('\t')[j].split('\r')[0].split('\n')[0] :
-                                newline += '\t' + str(line).split('\t')[j].split('\r')[0].split('\n')[0] + '_' + str(i)
-                                Out=True
-                                break
-                        if j==c1-1 and Out==False:
-                            newline += '\tunclassified Bacteria_' + str(i)
-            try:
-                newline += '\t' + '\t'.join(str(line).split('\t')[(c2):len(str(line).split('\t'))])
-                newline = newline.split('\r')[0].split('\n')[0] + '\n'
-            except IndexError:
-                newline += '\n'
+                            Out=False
+                            for j in reversed(range((c1-1), i)):  # replace 'NA', 'None' or empty annotation
+                                if str(line).split('\t')[j].split('\r')[0].split('\n')[0] not in ['NA','','None'] and \
+                                        'environmental samples' not in str(line).split('\t')[j].split('\r')[0].split('\n')[0] :
+                                    newline += '\t' + str(line).split('\t')[j].split('\r')[0].split('\n')[0] + '_' + str(i)
+                                    Out=True
+                                    break
+                            if j==c1-1 and Out==False:
+                                newline += '\tunclassified Bacteria_' + str(i)
+                try:
+                    newline += '\t' + '\t'.join(str(line).split('\t')[(c2):len(str(line).split('\t'))])
+                    newline = newline.split('\r')[0].split('\n')[0] + '\n'
+                except IndexError:
+                    newline += '\n'
         except KeyError:
             print 'The input c1 or c2 is out of the range of column number!\n' \
                   'Please input the right column numbers\n'
@@ -140,4 +141,4 @@ normalize(open(os.path.join(anno_dir, anno_file),'rb'),
 Taxon2=normalize2(open(os.path.join(anno_dir, anno_file + '.temp'), 'rb'))
 # output normalized taxonomy information
 normalize3(open(os.path.join(anno_dir, anno_file + '.temp'), 'rb'),
-           open(os.path.join(anno_dir, anno_file),'wb'),Taxon2)
+           open(os.path.join(anno_dir, anno_file)+ '.norm','wb'),Taxon2)

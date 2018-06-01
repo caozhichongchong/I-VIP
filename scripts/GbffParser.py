@@ -86,7 +86,7 @@ else:
                             os.path.join(in_dir, assem_name + ".faa"),
                             "ab")
                         output_handle3.write(
-                            ">%s_%s %s %s %s %s %s %s %s\n%s\n" %
+                            ">%s_%s_%s %s %s %s %s %s %s\n%s\n" %
                             (assem_name, record.id, desc, locus, ID, product, type, start, end, aa_seq))
                         output_handle3.close()
                         AA_true = 1
