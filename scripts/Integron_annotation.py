@@ -105,19 +105,19 @@ flog = open('Integron_annotation.log','wb')
 if args.a == 'Y':
     cmdARG = str(args.blastp) + " -query " + str(resultdir) + "/all.ORFs.fasta -db database/SARG.db.fasta -out " \
              + str(
-        resultdir) + "/all.ORFs.fasta.ARG.blast.txt -outfmt 6 -max_target_seqs 1 -evalue 1e-5 -num_threads " + \
+        resultdir) + "/all.ORFs.fasta.ARG.blast.txt -outfmt 6 -evalue 1e-5 -num_threads " + \
              str(args.t) + " \n"
     cmdARG += str(args.blastp) + " -query " + str(resultdir) + "/all.ORFs.ClassI.fasta -db database/SARG.db.fasta -out " \
               + str(
-        resultdir) + "/all.ORFs.ClassI.fasta.ARG.blast.txt -outfmt 6 -max_target_seqs 1 -evalue 1e-5 -num_threads " + \
+        resultdir) + "/all.ORFs.ClassI.fasta.ARG.blast.txt -outfmt 6 -evalue 1e-5 -num_threads " + \
               str(args.t) + " \n"
     cmdMRG = str(args.blastp) + " -query " + str(resultdir) + "/all.ORFs.fasta -db database/MRG.db.fasta -out " \
              + str(
-        resultdir) + "/all.ORFs.fasta.MRG.blast.txt -outfmt 6 -max_target_seqs 1 -evalue 1e-5 -num_threads " + \
+        resultdir) + "/all.ORFs.fasta.MRG.blast.txt -outfmt 6 -evalue 1e-5 -num_threads " + \
              str(args.t) + " \n"
     cmdMRG += str(args.blastp) + " -query " + str(resultdir) + "/all.ORFs.ClassI.fasta -db database/MRG.db.fasta -out " \
               + str(
-        resultdir) + "/all.ORFs.ClassI.fasta.MRG.blast.txt -outfmt 6 -max_target_seqs 1 -evalue 1e-5 -num_threads " + \
+        resultdir) + "/all.ORFs.ClassI.fasta.MRG.blast.txt -outfmt 6 -evalue 1e-5 -num_threads " + \
               str(args.t) + " \n"
     print cmdARG
     print cmdMRG
