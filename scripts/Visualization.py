@@ -17,7 +17,7 @@ parser.add_argument('--ot',
 parser.add_argument("--tx",
                     help="a file of taxonomy metadata (under your input folder)",
                     type=str, default='genbank_taxon.txt',
-                    metavar='genbank_taxon.txt or None')
+                    metavar='genbank_taxon.txt or None.norm')
 parser.add_argument("--tc",
                     help="column number corresponding to the taxonomy, i.e., from phylum to strain",
                     type=str, default='3,9', metavar='start column number, end column number')
@@ -28,7 +28,7 @@ parser.add_argument("--r",
 
 ################################################## Definition ########################################################
 args = parser.parse_args()
-if args.tx != 'None':
+if args.tx != 'None.norm':
     tx_dir, tx_file = os.path.split(os.path.abspath(args.tx))
     # load pathogen list
     Pathogen=[]
@@ -71,7 +71,7 @@ def pathogen(taxa):
 
 
 def network(line,nodetable,edgetable,Repli,Taxon):
-    if Taxon != 'None':
+    if Taxon != 'None.norm':
         try:
             # contruct the phylogenetic tree by adding taxonomy nodes and edges
             for i in range((c1 - 1), c2):
@@ -328,7 +328,7 @@ ARG_shortname=dict()
 for line in open('database/ARG_shortname.txt','rb'):
     ARG_shortname.setdefault(str(line).split('\t')[0],str(line).split('\t')[1].split('\r')[0].split('\n')[0])
 # set column number for the integron gene cassettes and taxonomy
-if args.tx != 'None':
+if args.tx != 'None.norm':
     # taxonomy column
     c1 = int(str(args.tc).split(',')[0].replace(' ', '')) + 5
     c2 = int(str(args.tc).split(',')[1].replace(' ', '')) + 5
@@ -341,7 +341,7 @@ for anno_file in list_file:
     edgetable = []
     # write labels in the edge and node tables
     node_add('Node', 'Shape', 'Label', 'Labelcolor', 'Color', 'Length')
-    if args.tx != 'None':
+    if args.tx != 'None.norm':
         node_add('Bacteria', 'taxon', 'Bacteria', 'black', 'None', 50)
     else:
         node_add('Phylogram', 'taxon', 'Phylogram', 'black', 'None', 50)
