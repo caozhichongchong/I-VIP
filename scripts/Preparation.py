@@ -135,11 +135,15 @@ def searchintsul(filename):
                     + args.r + "/Temp/"+filename+".sul1.usearch.txt -threads " + str(args.t) + "\n"
         elif "diamond" in args.u:
             # Start search integrase and sul1 genes by diamond!
-            cmdint1 = str(args.u) +" blastp --query " + args.r + "/Temp/"+filename + \
-                      " --db database/Integrase.fasta --out " + args.r + "/Temp/"+filename+\
+            cmdint1 = str(args.u) +" makedb " + \
+                      " --in database/Integrase.fasta -d database/Integrase  \n"
+            cmdsulI1 = str(args.u) + " makedb " + \
+                      " --in database/sul1_database.txt -d database/sul1_database  \n"
+            cmdint1 += str(args.u) +" blastp --query " + args.r + "/Temp/"+filename + \
+                      " --db database/Integrase --out " + args.r + "/Temp/"+filename+\
                       ".int.usearch.txt --outfmt 6 --max-target-seqs 1 --evalue 1e-2 --threads " + str(args.t) + " \n"
-            cmdsulI1 = str(args.u) +" blastp --query " + args.r + "/Temp/"+filename + \
-                      " --db database/sul1_database.txt --out " + args.r + "/Temp/"+filename+\
+            cmdsulI1 += str(args.u) +" blastp --query " + args.r + "/Temp/"+filename + \
+                      " --db database/sul1_database --out " + args.r + "/Temp/"+filename+\
                       ".sul1.usearch.txt --outfmt 6 --max-target-seqs 1 --evalue 1e-2 --threads " + str(args.t) + " \n"
         os.system(cmdint1)
         os.system(cmdsulI1)
