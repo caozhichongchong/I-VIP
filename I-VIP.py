@@ -247,7 +247,5 @@ else:
     os.system(cmd6)
     print 'Step6 Finished: integron visualization\n'
     flog.write('Step6 Finished: integron visualization\n')
-    os.system('rm -rf ' + str(args.r) +  '/Temp \n')
+    #os.system('rm -rf ' + str(args.r) +  '/Temp \n')
 flog.close()
-
-
