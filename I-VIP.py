@@ -95,6 +95,15 @@ parser.add_argument('--blastp',
 ################################################## Definition ########################################################
 args = parser.parse_args()
 in_dir= os.path.abspath(args.i)
+if args.tx == 'none':
+    txset = 'None'
+else:
+    txset = args.tx
+if args.tc == 'none':
+    tcset = 'None'
+else:
+    tcset = args.tc
+
 # set up input files
 print [args.f, any (format in args.f for format in ['gbff','gbff.gz'])]
 if any (format in args.f for format in ['gbff','gbff.gz']):
@@ -223,15 +232,15 @@ else:
     print 'Step4 Finished: integron extraction\n'
     flog.write('Step4 Finished: integron extraction\n')
     # Step5 Gene cassettes annotation
-    if args.tx != 'None':
+    if txset != 'None':
         # normalize the taxonomy information
         cmd5 = 'python scripts/Taxon_normalization.py -i ' + str(in_dir) + ' --tc ' + \
-               str(args.tc) + ' --tx ' + str(args.tx) + '\n'
+               str(tcset) + ' --tx ' + str(txset) + '\n'
     else:
         cmd5 = ''
     cmd5 += 'python scripts/Integron_annotation.py -i ' + str(in_dir) + ' -f ' + \
                str(args.f) + ' --r ' + str(args.r) + ' --a ' + str(args.a) \
-            + ' --t ' + str(args.t) + ' --tx ' + str(args.tx) + '.norm --blastp ' + str(args.blastp) +'\n'
+            + ' --t ' + str(args.t) + ' --tx ' + str(txset) + '.norm --blastp ' + str(args.blastp) +'\n'
     print cmd5
     flog.write(cmd5)
     os.system(cmd5)
@@ -240,7 +249,7 @@ else:
     os.system('rm -rf Temp \n')
     # Step6 Integron visualization
     cmd6 = 'python scripts/Visualization.py -i ' + str(in_dir) + ' --tc ' + \
-               str(args.tc) + ' --tx ' + str(args.tx) + '.norm --r ' + \
+               str(tcset) + ' --tx ' + str(txset) + '.norm --r ' + \
            str(args.r) + ' --ot ' + str(args.r) + '/Temp/all.orf.length \n'
     print cmd6
     flog.write(cmd6)

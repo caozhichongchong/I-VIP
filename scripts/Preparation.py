@@ -145,6 +145,8 @@ def searchintsul(filename):
             cmdsulI1 += str(args.u) +" blastp --query " + args.r + "/Temp/"+filename + \
                       " --db database/sul1_database --out " + args.r + "/Temp/"+filename+\
                       ".sul1.usearch.txt --outfmt 6 --max-target-seqs 1 --evalue 1e-2 --threads " + str(args.t) + " \n"
+        print cmdint1
+        print cmdsulI1
         os.system(cmdint1)
         os.system(cmdsulI1)
         Int_file = Extractaa( args.r + '/Temp', filename+".int.usearch.txt", filename,'int')
