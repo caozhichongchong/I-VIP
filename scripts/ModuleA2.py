@@ -78,13 +78,13 @@ if args.func_type == 0:
             os.mkdir(str(input_path)+'/extract')
         except OSError:
             pass
-        f1 = open(os.path.join(str(input_path)+'/extract','Finished_Integrase_seq.fa'), 'ab')
+        f1 = open(os.path.join(str(input_path)+'/extract','Finished_Integrase_seq.fa'), 'a')
     else:
         # when the attC site was found at the extremity of an integron-like sequence, it will be extended at that extremity
         # extend an integron-like sequence for i times
         Distance=4000
-        f1 = open(os.path.join(str(input_path)+'/extract',str(args.i)+'-1-Integrase_seq.fa'), 'ab')
-        f2 = open(os.path.join(str(input_path)+'/extract',str(args.i) + '-2-Integrase_seq.fa'), 'ab')
+        f1 = open(os.path.join(str(input_path)+'/extract',str(args.i)+'-1-Integrase_seq.fa'), 'a')
+        f2 = open(os.path.join(str(input_path)+'/extract',str(args.i) + '-2-Integrase_seq.fa'), 'a')
     if args.target=='None':
         # set the target sequence files for first time extraction
         cmd1='ls '+str(input_path)+'/*'+str(args.f)+' > '+str(input_path)+'/extract/1-Target.txt'
@@ -116,7 +116,7 @@ else:
     except OSError:
         pass
 # record Module A2 process
-flog = open('ModuleA2.log', 'wb')
+flog = open('ModuleA2.log', 'w')
 
 ################################################### Function ########################################################
 
@@ -157,7 +157,7 @@ def Cmsearch(list_file):
             Length = 0
             for record in SeqIO.parse(file, 'fasta'):
                 Length += len(record.seq)
-                f1 = open(str(file) + '_' + str(int(Length / 2000000)), 'ab')
+                f1 = open(str(file) + '_' + str(int(Length / 2000000)), 'a')
                 f1.write('>' + str(record.id) + '\t' + str(record.description) + '\n')
                 f1.write(str(record.seq) + '\n')
                 f1.close()
@@ -189,7 +189,7 @@ def Cmsearch(list_file):
 
 def ORFinfo(file, ORFs_anno):
     #set up ORF information
-    for line in open(file, 'rb'):
+    for line in open(file, 'r'):
         ORFs_anno.setdefault(str(line).split('\t')[0],
                              [str(line).split('\t')[1], float(str(line).split('\t')[-3]),
                                   float(str(line).split('\t')[-2])])
@@ -214,13 +214,13 @@ if args.func_type==0:
     Sequence_list = [] # all target sequences for extension
     Extract_list = [] # sequences to be extracted
     # set up target sequences
-    for line in open(Target_file, 'rb'):
+    for line in open(Target_file, 'r'):
         in_dir, input_file = os.path.split(line.split('\n')[0])
         File_list.append(str(input_file).split(str(args.f))[0])
         if args.i >1 :
             Sequence_list.append(str(line).split('\n')[0])
     # locate the sequences for extraction
-    for line in open(Int_file, 'rb'):
+    for line in open(Int_file, 'r'):
         ORF=str(line).split('\t')[0]
         # an integrase or sul1 ORF
         for key in File_list:
@@ -253,7 +253,7 @@ if args.func_type==0:
                             Locus1 = 0
                             # to record that for this sequence, one extremity has been reached
                             fwarning = open(os.path.join(str(input_path) + '/extract', str(args.i) + '.warning.txt'),
-                                            'ab')
+                                            'a')
                             fwarning.write(Sequenceid + '\n')
                             fwarning.close()
                         Locus2 = Locus2 + Distance + 1
@@ -275,7 +275,7 @@ if args.func_type==0:
                             Locus1 = 0
                             # to record that for this sequence, one extremity has been reached
                             fwarning = open(os.path.join(str(input_path) + '/extract', str(args.i) + '.warning.txt'),
-                                            'ab')
+                                            'a')
                             fwarning.write(Sequenceid + '\n')
                             fwarning.close()
                         Locus2 = Locus2 + 20000 + (int(args.i) - 2) * Distance - 200
@@ -331,7 +331,7 @@ elif args.func_type == 1:
     # analyze attC results to decide whether to further extend the sequences
     # Sequence_list to store all target sequences for extension and output to f3
     Sequence_list = []
-    f3 = open(os.path.join(str(input_path) + '/extract', str(args.i+1) + '-Target.txt'), 'ab')
+    f3 = open(os.path.join(str(input_path) + '/extract', str(args.i+1) + '-Target.txt'), 'a')
     Target_file=str(input_path) + '/extract/'+str(args.i)+'-Target.txt'
     for line in open(Target_file, 'r'):
         in_dir, input_file = os.path.split(line.split('\n')[0])
@@ -339,12 +339,12 @@ elif args.func_type == 1:
     if args.i == 1:
         # after first extraction
         # File_attC stores the attC search results of integron-like sequences
-        f1 = open(os.path.join(str(input_path) + '/extract', str(File_attC).replace('txt2.txt', 'new.txt2.txt')), 'ab')
+        f1 = open(os.path.join(str(input_path) + '/extract', str(File_attC).replace('txt2.txt', 'new.txt2.txt')), 'a')
         # correct the loci of attC search results into the loci on the original sequences
-        for line in open(os.path.join(str(input_path) + '/extract', str(File_attC)), 'rb'):
+        for line in open(os.path.join(str(input_path) + '/extract', str(File_attC)), 'r'):
             Long_integron_1(str(line), Sequence_list)
             # decide whether an integron-like sequence needs to be extended
-            for line1 in open(Int_file, 'rb'):
+            for line1 in open(Int_file, 'r'):
                 ORF = str(line1).split('\t')[0]
                 if ORF in str(line).split('\t')[0]:
                     Locus = int(ORFs_anno.get(ORF, 'None')[1])
@@ -357,14 +357,14 @@ elif args.func_type == 1:
     else:
         # after extension
         # File_attC1, and File_attC2 store the attC search results of integron-like sequences (for each side)
-        f1 = open(os.path.join(str(input_path) + '/extract', str(File_attC1).replace('txt2.txt', 'new.txt2.txt')), 'ab')
-        f2 = open(os.path.join(str(input_path) + '/extract', str(File_attC2).replace('txt2.txt', 'new.txt2.txt')), 'ab')
+        f1 = open(os.path.join(str(input_path) + '/extract', str(File_attC1).replace('txt2.txt', 'new.txt2.txt')), 'a')
+        f2 = open(os.path.join(str(input_path) + '/extract', str(File_attC2).replace('txt2.txt', 'new.txt2.txt')), 'a')
         # File_attC1
-        for line in open(os.path.join(str(input_path) + '/extract', str(File_attC1)), 'rb'):
+        for line in open(os.path.join(str(input_path) + '/extract', str(File_attC1)), 'r'):
             Long_integron_1(str(line), Sequence_list)
             # decide whether an integron-like sequence needs to be extended
             # correct the loci of attC search results into the loci on the original sequences
-            for line1 in open(Int_file, 'rb'):
+            for line1 in open(Int_file, 'r'):
                 ORF = str(line1).split('\t')[0]
                 if ORF in str(line).split('\t')[0]:
                     Locus = int(ORFs_anno.get(ORF, 'None')[1])
@@ -383,11 +383,11 @@ elif args.func_type == 1:
                         except ValueError:
                             pass
         # File_attC2
-        for line in open(os.path.join(str(input_path) + '/extract', str(File_attC2)), 'rb'):
+        for line in open(os.path.join(str(input_path) + '/extract', str(File_attC2)), 'r'):
             Long_integron_2(str(line), Sequence_list)
             # decide whether an integron-like sequence needs to be extended
             # correct the loci of attC search results into the loci on the original sequences
-            for line1 in open(Int_file, 'rb'):
+            for line1 in open(Int_file, 'r'):
                 ORF = str(line1).split('\t')[0]
                 if ORF in str(line).split('\t')[0]:
                     Locus = int(ORFs_anno.get(ORF, 'None')[1])
@@ -449,7 +449,7 @@ else:
         for line in open(Attc_file, 'r'):
             f1 = open(os.path.join(outputdir,
                                    str(line).split(args.f)[0] + str(args.f) + '.Z.max.attc.hits.txt2.txt'),
-                      'ab')
+                      'a')
             f1.write(str(line))
             f1.close()
     os.system('rm -rf ' +str(input_path)+'/extract \n')

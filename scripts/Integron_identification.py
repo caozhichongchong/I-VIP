@@ -57,10 +57,10 @@ except OSError:
 Cutoff_attc = float(args.c)
 # load IntI1 list
 IntI1=[]
-for line in open(os.path.join('database/' + 'IntI1_list.txt'), 'rb'):
+for line in open(os.path.join('database/' + 'IntI1_list.txt'), 'r'):
     IntI1.append(str(line).split('\r')[0].split('\n')[0])
 # record Integron_identification process
-flog = open('Integron_identification.log', 'wb')
+flog = open('Integron_identification.log', 'w')
 
 
 ################################################### Function #########################################################
@@ -70,7 +70,7 @@ def int_blast_list(file, list):
     # load integrase and sul1 search results
     # into the ORFs
     try:
-        for line in open(file, 'rb'):
+        for line in open(file, 'r'):
             # ORFs on the target sequence (Contig)
             AA = str(line).split('\t')[0]
             if list.get(AA, 'None') == 'None':
@@ -103,7 +103,7 @@ def formatattc(Attc_list, filename, recordid):
 def int_attc_list(file, list):
     # load attC search results
     # into the Contig (target sequence)
-    for line in open(file, 'rb'):
+    for line in open(file, 'r'):
         if float(str(line).split('\t')[15]) <= Cutoff_attc:
             # filter out attC search results by e-value (Cutoff_attc)
             if list.get(input_file+'_'+str(line).split('\t')[0], 'None') == 'None':
@@ -398,7 +398,7 @@ def write_integron(Name, Site, Annotation, Inttype):
 # load ORF information of loci
 # ORFs_name = {ORF, [locus1, locus2]}
 ORFs_name=dict()
-for line in open(args.ot,'rb'):
+for line in open(args.ot,'r'):
     ORFs_name.setdefault(str(line).split('\t')[0],
                          [float(str(line).split('\t')[-3]),
                           float(str(line).split('\t')[-2])])
@@ -434,7 +434,7 @@ for file_name in list_fasta:
         # output integrons identified
         f1 = open(
             os.path.join(resultdir, os.path.splitext(str(input_file))[0] + '.Integron.txt'),
-            'ab')
+            'a')
         Lable = 'Integron_Type' + '\t' + 'Integron_Name' + '\t' + 'Number_Of_AttC' + '\t' + \
                 'Integron_Element_Locus' + '\t' + 'Integron_Element_Type_Annotation' + '\n'
         f1.write(Lable)

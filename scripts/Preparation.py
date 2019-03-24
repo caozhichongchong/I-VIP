@@ -52,12 +52,12 @@ input_path = os.path.abspath(args.i)
 list_data = glob.glob(os.path.join(input_path,'*'+args.f))
 search_path = args.r + '/output'
 # record preparation process
-flog = open('Preparation.log', 'wb')
+flog = open('Preparation.log', 'w')
 # load integrases and sul1 reference length
 Length = dict()
-for line in open(os.path.join('database/' + 'Integrase.fasta.length.txt'), 'rb'):
+for line in open(os.path.join('database/' + 'Integrase.fasta.length.txt'), 'r'):
     Length.setdefault(str(line).split('\t')[0], float(str(line).split('\t')[2]))
-for line in open(os.path.join('database/' + 'sul1_database.txt.length.txt'), 'rb'):
+for line in open(os.path.join('database/' + 'sul1_database.txt.length.txt'), 'r'):
     Length.setdefault(str(line).split('\t')[0], float(str(line).split('\t')[2]))
 ################################################### Function ########################################################
 
@@ -79,7 +79,7 @@ def addname(filedir, file_name):
 def filter_blast_list(file, Cutoff_identity, Cutoff_hitlength):
     try:
         f = open(file + '.filter.txt', 'w')
-        for line in open(file, 'rb'):
+        for line in open(file, 'r'):
             if float(str(line).split('\t')[2]) >= Cutoff_identity:
                 if float(str(line).split('\t')[3]) >= Cutoff_hitlength * float(
                         Length.get(str(line).split('\t')[1])) / 100:
@@ -99,9 +99,9 @@ def Extractaa(root, searchfile, orffile, gene):
     try:
         for record in SeqIO.parse(open(os.path.join(root, orffile), 'r'), 'fasta'):
             AA_seq.setdefault(str(record.id), str(record.seq))
-        f1 = open(os.path.join(root, orffile + '.' + str(gene) + '.aa'), 'wb')
+        f1 = open(os.path.join(root, orffile + '.' + str(gene) + '.aa'), 'w')
         try:
-            for line in open(os.path.join(root, searchfile), 'rb'):
+            for line in open(os.path.join(root, searchfile), 'r'):
                 try:
                     AA = str(line).split('\t')[0].split(' ')[0]
                     if AA_seq[AA] != '':
@@ -171,7 +171,7 @@ def Calculate_length(file_name, ORF_format):
         print 'No ORF format information for ' + file_name + '!'
         flog.write('No ORF format information for ' + file_name + '!' + '\n')
     else:
-        f1=open(args.r + '/Temp/all.orf.length','ab')
+        f1=open(args.r + '/Temp/all.orf.length','a')
         try:
             Fasta_name = open(file_name, 'r')
             for record in SeqIO.parse(Fasta_name, 'fasta'):
@@ -194,13 +194,13 @@ def Calculate_length(file_name, ORF_format):
 
 ################################################### Programme #######################################################
 # check the format of ORF, genbank parsing or prodigal prediction
-fot=open(args.r + '/Temp/ORF_format.log','wb')
+fot=open(args.r + '/Temp/ORF_format.log','w')
 for file_name in list_data:
     # check orf file
     filedir, file_name = os.path.split(file_name)
     try:
         orf_name=file_name.replace(args.f,args.o)
-        f1 = open(os.path.join(filedir,orf_name),'rb')
+        f1 = open(os.path.join(filedir,orf_name),'r')
         for line in f1:
             if args.ot == 1:
                 try:
@@ -255,16 +255,16 @@ os.system('cat '+search_path+'/*.int.blast.txt > '+search_path+'/all.int.blast.t
 filter_blast_list(str(search_path) + '/all.sul1.blast.txt', 50, 50)
 filter_blast_list(str(search_path) + '/all.int.blast.txt', 80, 50)
 # separate filtered blast results into individual files, corresponding to the target sequences
-fsul1 = open(os.path.join(search_path, 'all.sul1.blast.txt.filter.txt'))
+fsul1 = open(os.path.join(search_path, 'all.sul1.blast.txt.filter.txt'),'r')
 for line in fsul1:
     Filename = str(line).split('\t')[0].split(args.o)[0].split(str(args.f))[0]
-    fnew = open(os.path.join(search_path, Filename + str(args.f) + '.sul1.txt'), 'ab')
+    fnew = open(os.path.join(search_path, Filename + str(args.f) + '.sul1.txt'), 'a')
     fnew.write(line)
     fnew.close()
-fint1 = open(os.path.join(search_path, 'all.int.blast.txt.filter.txt'))
+fint1 = open(os.path.join(search_path, 'all.int.blast.txt.filter.txt'),'r')
 for line in fint1:
     Filename = str(line).split('\t')[0].split(args.o)[0].split(str(args.f))[0]
-    fnew = open(os.path.join(search_path, Filename + str(args.f) + '.int.txt'), 'ab')
+    fnew = open(os.path.join(search_path, Filename + str(args.f) + '.int.txt'), 'a')
     fnew.write(line)
     fnew.close()
 print 'Finished preparation!'

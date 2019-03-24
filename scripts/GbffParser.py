@@ -59,7 +59,7 @@ else:
                     # record taxaid
                     taxaid = feature.qualifiers.get('db_xref', 'None')
             # output genome sequence
-            output_handle1 = open(os.path.join(in_dir, assem_name + ".fa"), "ab")
+            output_handle1 = open(os.path.join(in_dir, assem_name + ".fa"), "a")
             output_handle1.write(
                 ">%s_%s %s %s\n%s\n" % (assem_name, record.id, record.description, taxaid[-1], record.seq))
             # fetch CDS sequence
@@ -84,7 +84,7 @@ else:
                         # output CDS sequence
                         output_handle3 = open(
                             os.path.join(in_dir, assem_name + ".faa"),
-                            "ab")
+                            "a")
                         output_handle3.write(
                             ">%s_%s_%s %s %s %s %s %s %s\n%s\n" %
                             (assem_name, record.id, desc, locus, ID, product, type, start, end, aa_seq))

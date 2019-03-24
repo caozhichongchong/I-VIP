@@ -135,10 +135,10 @@ def normalize3(f3,f4,Taxon2):
 
 # main programme
 # correct "NA" taxonamy into "the taxonomy in a higher level" + "_" + "taxonomy_level"
-normalize(open(os.path.join(anno_dir, anno_file),'rb'),
-          open(os.path.join(anno_dir, anno_file+'.temp'),'wb'))
+normalize(open(os.path.join(anno_dir, anno_file),'r'),
+          open(os.path.join(anno_dir, anno_file+'.temp'),'w'))
 # correct taxonomy level for each taxonomy, by voting
-Taxon2=normalize2(open(os.path.join(anno_dir, anno_file + '.temp'), 'rb'))
+Taxon2=normalize2(open(os.path.join(anno_dir, anno_file + '.temp'), 'r'))
 # output normalized taxonomy information
-normalize3(open(os.path.join(anno_dir, anno_file + '.temp'), 'rb'),
-           open(os.path.join(anno_dir, anno_file)+ '.norm','wb'),Taxon2)
+normalize3(open(os.path.join(anno_dir, anno_file + '.temp'), 'r'),
+           open(os.path.join(anno_dir, anno_file)+ '.norm','w'),Taxon2)

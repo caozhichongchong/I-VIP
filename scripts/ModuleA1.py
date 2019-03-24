@@ -67,7 +67,7 @@ def moduleA1(list_file):
             Length = 0
             for record in SeqIO.parse(file, 'fasta'):
                 Length += len(record.seq)
-                f1 = open(str(file) + '_' + str(int(Length / 2000000)), 'ab')
+                f1 = open(str(file) + '_' + str(int(Length / 2000000)), 'a')
                 f1.write('>' + str(record.id) + '\t' + str(record.description) + '\n')
                 f1.write(str(record.seq) + '\n')
                 f1.close()
@@ -106,7 +106,7 @@ def moduleA1(list_file):
 args = parser.parse_args()
 in_dir= os.path.abspath(args.input)
 # record Module A1 process
-flog = open('ModuleA1.log', 'wb')
+flog = open('ModuleA1.log', 'w')
 search_path = args.r + '/output'
 
 
@@ -120,8 +120,8 @@ if args.m==1:
 attc_filelist=glob.glob(os.path.join(in_dir,'*attc.hits.txt'))
 # format attC results
 for attcfile in attc_filelist:
-    f1=open(attcfile+'2.txt','ab')
-    for line in open(attcfile,'rb'):
+    f1=open(attcfile+'2.txt','a')
+    for line in open(attcfile,'r'):
         if str(line)[0]=='#':
             pass
         else:

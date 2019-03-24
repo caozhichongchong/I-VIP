@@ -40,7 +40,7 @@ if args.tx != 'None':
     tx_dir = os.path.abspath(args.i)
     taxon = dict()
     try:
-        for line in open(os.path.join(tx_dir, tx_file),'rb'):
+        for line in open(os.path.join(tx_dir, tx_file),'r'):
             taxon.setdefault(str(line).split('\t')[0].split(args.f)[0],
                              line.split('\r')[0].split('\n')[0])
     except IOError:
@@ -53,8 +53,8 @@ tx_dir = os.path.abspath(args.i)
 
 def filter_blast_list(file, Cutoff_identity, Cutoff_hitlength, GC_annotation):
     try:
-        f = open(file + '.filter.txt', 'wb')
-        for line in open(file, 'rb'):
+        f = open(file + '.filter.txt', 'w')
+        for line in open(file, 'r'):
             if float(str(line).split('\t')[2]) >= Cutoff_identity:
                 if float(str(line).split('\t')[3]) >= Cutoff_hitlength * float(
                         Length.get(str(line).split('\t')[1])) / 100:
@@ -78,8 +78,8 @@ def filter_blast_list(file, Cutoff_identity, Cutoff_hitlength, GC_annotation):
 
 def ORF_annotation(Intstruc, GC_MRG, GC_ARG, output):
     try:
-        f = open(output, 'wb')
-        for line in open(Intstruc, 'rb'):
+        f = open(output, 'w')
+        for line in open(Intstruc, 'r'):
             ORF = str(line).split('\t')[1]
             line = line.split('\r')[0].split('\n')[0]
             if ORF in GC_ARG:
@@ -101,7 +101,7 @@ def ORF_annotation(Intstruc, GC_MRG, GC_ARG, output):
 
 ################################################### Programme #######################################################
 # annotate gene cassettes again antibiotic and metal resistant databases
-flog = open('Integron_annotation.log','wb')
+flog = open('Integron_annotation.log','w')
 if args.a == 'Y':
     cmdARG = str(args.blastp) + " -query " + str(resultdir) + "/all.ORFs.fasta -db database/SARG.db.fasta -out " \
              + str(
@@ -125,13 +125,13 @@ if args.a == 'Y':
     os.system(cmdMRG)
     # load ARG and MRG reference length
     Length = dict()
-    for line in open(os.path.join('database/' + 'MRG.db.fasta.length.txt'), 'rb'):
+    for line in open(os.path.join('database/' + 'MRG.db.fasta.length.txt'), 'r'):
         Length.setdefault(str(line).split('\t')[0], float(str(line).split('\t')[2]))
-    for line in open(os.path.join('database/' + 'SARG.db.fasta.length.txt'), 'rb'):
+    for line in open(os.path.join('database/' + 'SARG.db.fasta.length.txt'), 'r'):
         Length.setdefault(str(line).split('\t')[0], float(str(line).split('\t')[2]))
     # load ARG structure (genotype and phenotype)
     Structure = dict()
-    for line in open(os.path.join('database/' + 'SARG.structure.txt'), 'rb'):
+    for line in open(os.path.join('database/' + 'SARG.structure.txt'), 'r'):
         Structure.setdefault(str(line).split('\t')[0], str(line).split('\t')[1] + '\t'
                              +str(line).split('\t')[2].split('\r')[0].split('\n')[0])
     # filter blast results and annotate ORF on integrons of other classes
@@ -168,12 +168,12 @@ list_file = [str(resultdir) + "/all.Integron_structure.ClassI.annotated.txt",
 for file_name in list_file:
     filedir, file_name = os.path.split(file_name)
     f1 = open(os.path.join(str(resultdir), str(file_name).replace('.annotated.txt',
-                           '.annotated.formated.txt')), 'ab')
+                           '.annotated.formated.txt')), 'a')
     integron = 0
     lastintegron = ''
     ARG_MRG_number = 0
     Output = 0
-    for line in open(os.path.join(str(resultdir),file_name),'rb'):
+    for line in open(os.path.join(str(resultdir),file_name),'r'):
         try:
             integronclass = str(line).split('\t')[0]
             targetfile = str(line).split('\t')[1].split(args.f)[0]

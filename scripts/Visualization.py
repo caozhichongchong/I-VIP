@@ -32,7 +32,7 @@ if args.tx != 'None.norm':
     tx_dir, tx_file = os.path.split(os.path.abspath(args.tx))
     # load pathogen list
     Pathogen=[]
-    for lines in open('database/Pathogen.txt','rb'):
+    for lines in open('database/Pathogen.txt','r'):
         Pathogen.append(lines.split('\r')[0].split('\n')[0])
 in_dir = os.path.abspath(args.i)
 # load all annotation results
@@ -50,12 +50,12 @@ except OSError:
 
 
 def node_add(node,shape,label,labelcolor,color,length):
-    f1=open(os.path.join(resultdir,str(anno_file).replace('.txt','.node.txt')),'ab')
+    f1=open(os.path.join(resultdir,str(anno_file).replace('.txt','.node.txt')),'a')
     f1.write(str(node)+'\t'+str(shape)+'\t'+str(label)+'\t'+str(labelcolor)+'\t'+str(color)+'\t'+str(length)+'\n')
 
 
 def edge_add(node1,node2,edgetype,color,length):
-    f1 = open(os.path.join(resultdir, str(anno_file).replace('.txt','.edge.txt')), 'ab')
+    f1 = open(os.path.join(resultdir, str(anno_file).replace('.txt','.edge.txt')), 'a')
     f1.write(str(node1) + '\t' + str(node2) + '\t' + str(edgetype) + '\t' + str(color)+ '\t' + str(length) + '\n')
 
 
@@ -320,12 +320,12 @@ def netword_add(Repli):
 ################################################### Programme #######################################################
 # load ORF length information
 #ORFs_name=dict()
-#for line in open(args.ot,'rb'):
+#for line in open(args.ot,'r'):
 #    ORFs_name.setdefault(str(line).split('\t')[0],
 #                         abs(float(str(line).split('\t')[-3]) - float(str(line).split('\t')[-2])))
 # shorten the ARG phenotype name for display
 ARG_shortname=dict()
-for line in open('database/ARG_shortname.txt','rb'):
+for line in open('database/ARG_shortname.txt','r'):
     ARG_shortname.setdefault(str(line).split('\t')[0],str(line).split('\t')[1].split('\r')[0].split('\n')[0])
 # set column number for the integron gene cassettes and taxonomy
 if args.tx != 'None.norm':
@@ -348,7 +348,7 @@ for anno_file in list_file:
     edge_add('Node1', 'Node2', 'Type', 'Color', 'Length')
     # merge the replicated integrons
     Repli = dict()
-    for line in open(os.path.join(annotationdir,anno_file),'rb'):
+    for line in open(os.path.join(annotationdir,anno_file),'r'):
         if 'Type' not in str(line).split('\t')[0]:
             # main function of contructing phylogram
             network(str(line),nodetable,edgetable,Repli,args.tx)

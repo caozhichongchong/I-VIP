@@ -38,7 +38,7 @@ list_fasta = glob.glob(os.path.join(input_path,'*'+input_format))
 resultdir = args.r + "/Integron"
 # load ORF format of files
 ORFformat = dict()
-for lines in open(args.r + '/Temp/ORF_format.log', 'rb'):
+for lines in open(args.r + '/Temp/ORF_format.log', 'r'):
     ORFformat.setdefault(lines.split('\t')[0], int(lines.split('\t')[-1].split('\n')[0]))
 # generate dirs for results, including ORFs, Integron_seqs (integron),
 # Integrase_seqs (integrase sequences), Genbank_annotation (genbank annotation), Integron_structure (integron structure)
@@ -245,7 +245,7 @@ class Integron:
 
 def int_integron(file, AA_format):
     # main function of integron extraction
-    for line in open(os.path.join(in_dir, file), 'rb'):
+    for line in open(os.path.join(in_dir, file), 'r'):
         if ':' in str(line).split('\t')[1]:
             # set up all integrons in the format of a new class
             Keyintegron = Integron()
@@ -337,7 +337,7 @@ def write_integrase(key, LocusORF1, LocusORF2, i, f, record, end, file):
                     # annotated as integrases
                     fnotA = open(os.path.join(str(resultdir) + '/Other/Integrase_seqs',
                                               str(file).replace(str(input_format), '.txt')),
-                                 'ab')
+                                 'a')
                     fnotA.write(
                         '>' + str(key.name) + ':' + str(i) + '\t' + str(key.intanno2.get(locusint)) + '\t'
                         + str(record.description) + '\n')
@@ -432,15 +432,15 @@ def extract_ORFs(file,key,AA_format):
     # set output folder
     # key stored one integron
     if key.type not in ['A','B']:
-        f1 = open(os.path.join(str(resultdir)+'/Other/ORFs',str(file).replace(str(input_format),'.AA')),'ab')
-        f3 = open(os.path.join(str(resultdir) + '/Other/Integrase_seqs', str(file).replace(str(input_format), '.AA')), 'ab')
-        f4 = open(os.path.join(str(resultdir) + '/Other/Integron_structure', str(file).replace(str(input_format), '.txt')), 'ab')
+        f1 = open(os.path.join(str(resultdir)+'/Other/ORFs',str(file).replace(str(input_format),'.AA')),'a')
+        f3 = open(os.path.join(str(resultdir) + '/Other/Integrase_seqs', str(file).replace(str(input_format), '.AA')), 'a')
+        f4 = open(os.path.join(str(resultdir) + '/Other/Integron_structure', str(file).replace(str(input_format), '.txt')), 'a')
     else:
-        f1 = open(os.path.join(str(resultdir) + '/ClassI/ORFs', str(file).replace(str(input_format), '.AA')), 'ab')
+        f1 = open(os.path.join(str(resultdir) + '/ClassI/ORFs', str(file).replace(str(input_format), '.AA')), 'a')
         f3 = open(os.path.join(str(resultdir) + '/ClassI/Integrase_seqs', str(file).replace(str(input_format), '.AA')),
-                  'ab')
+                  'a')
         f4 = open(os.path.join(str(resultdir) + '/ClassI/Integron_structure', str(file).replace(str(input_format), '.txt')),
-                  'ab')
+                  'a')
     # set input ORF file
     f2 = SeqIO.parse(os.path.join(AA_path, str(file).replace(str(input_format), args.o)) + '.add', 'fasta')
     # start extracting ORFs
@@ -554,11 +554,11 @@ def extract_Seqs(file,key):
     # extract integron sequences
     if key.type in ['A','B']:
         f1 = open(os.path.join(str(resultdir) + '/ClassI/Integron_seqs', str(file).replace(str(input_format), '.fasta')),
-                  'ab')
+                  'a')
     else:
-        f1 = open(os.path.join(str(resultdir) + '/Other/Integron_seqs', str(file).replace(str(input_format), '.fasta')), 'ab')
+        f1 = open(os.path.join(str(resultdir) + '/Other/Integron_seqs', str(file).replace(str(input_format), '.fasta')), 'a')
     f3 = open(os.path.join(str(resultdir), 'Contigs_with_integrons.fasta'),
-                  'ab')
+                  'a')
     # input target sequence file
     f2 = SeqIO.parse(os.path.join(file_path, str(file).replace(str(input_format), args.f)), 'fasta')
     for record in f2:
@@ -580,12 +580,12 @@ def extract_gbff(gbff_list, file, key):
             if key.type in ['A', 'B']:
                 f1 = open(
                     os.path.join(str(resultdir) + '/ClassI/Genbank_annotation', str(file).replace(str(input_format), '.annotation')),
-                    'ab')
+                    'a')
             else:
                 f1 = open(
                     os.path.join(str(resultdir) + '/Other/Genbank_annotation',
                                  str(file).replace(str(input_format), '.annotation')),
-                    'ab')
+                    'a')
             for record in SeqIO.parse(gbfffile, "genbank"):
                 if record.id in str(key.name):
                     # find the target sequence
@@ -629,7 +629,7 @@ def extract_integrase_gbff(gbff_list, file, key):
 
 
 ################################################### Programme #######################################################
-flog = open('Integron_Extraction.log', 'ab')
+flog = open('Integron_Extraction.log', 'a')
 # main programme body
 for file_name in list_fasta:
     try:
