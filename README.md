@@ -35,7 +35,7 @@ It's highly recommended to keep less than 10,000 files in your input folder
 
 The Integron Visualization and Identification Pipeline (I-VIP) is a well-organized pipeline to identify, classify, annotate and visualize class 1 integrons (Fig 1) in complete/draft genomes and assembled metagenomes. To facilitate flexible application by the users, I-VIP was separated into two modules; Module A for integron identification and classification (orange framework in Fig 1), and Module B for integron extraction, annotation and visualization (blue framework in Fig 1). The I-VIP also provides multiple optional parameters and diverse output formats for further analysis by the user end (more details in the following sections).
 
-![i-vip_methodology](https://github.com/caozhichongchong/I-VIP/blob/master/Methodology.png)
+![i-vip_methodology](https://raw.githubusercontent.com/caozhichongchong/I-VIP/master/Methodology.png)
 
 ![i-vip](https://user-images.githubusercontent.com/24948204/40829644-a27369ca-65b6-11e8-8c47-11f3218715d4.png)
 Fig 1. Technical flow of I-VIP
