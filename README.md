@@ -1,9 +1,9 @@
 # I-VIP
 Please refer to the User Manual\
 Update: I-VIP.v1.1\
-https://github.com/caozhichongchong/I-VIP/releases\
+https://github.com/caozhichongchong/I-VIP/releases  \
 For python >= 3.0 (trail version)\
-https://github.com/caozhichongchong/I-VIP/releases/download/I-VIPv1.1/I-VIP.v1.1.py3.0.tar.gz\
+https://github.com/caozhichongchong/I-VIP/releases/download/I-VIPv1.1/I-VIP.v1.1.py3.0.tar.gz \
 For python <3.0\
 https://github.com/caozhichongchong/I-VIP/releases/download/I-VIPv1.1/I-VIP.v1.1.tar.gz
 
