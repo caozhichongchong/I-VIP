@@ -450,6 +450,7 @@ Saccharopolyspora rectivirgula
 Salmonella bongori
 Salmonella choleraesuis
 Salmonella enteritidis
+Salmonella enterica
 Salmonella typhi
 Salmonella typhimurium
 Sebaldella termitidis
