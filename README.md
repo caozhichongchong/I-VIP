@@ -45,8 +45,8 @@ Fig 2. What can I-VIP do
 Dr. An-Ni Zhang (MIT), Prof. Tong Zhang (University of Hong Kong)
 
 ## Citation
-1. Zhang, A.N., ...,  Zhang, T., 2018. 
-Conserved phylogenetic distribution and limited antibiotic resistance of class 1 integrons revealed 
+1. Zhang, A.N., ...,  Zhang, T., 2018.
+Conserved phylogenetic distribution and limited antibiotic resistance of class 1 integrons revealed
 by assessing the bacterial genome and plasmid collection. Microbiome, 6(1), p.130.
 2. Cury J, ..., Rocha EP: Identification and analysis of integrons and cassette arrays in bacterial genomes. Nucleic acids research 2016, 44:4539-4550. (attC database)
 3. Yang Y, ..., Zhang T: ARGs-OAP: online analysispipeline for antibiotic resistance genes detection from metagenomic data using an integrated structured ARG-database. Bioinformatics 2016. (optional: antibiotic resistance database)

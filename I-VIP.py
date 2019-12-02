@@ -97,6 +97,8 @@ args = parser.parse_args()
 in_dir= os.path.abspath(args.i)
 if args.tx == 'none':
     txset = 'None'
+elif args.i == 'example':
+    txset = os.path.join(example,args.tx)
 else:
     txset = args.tx
 if args.tc == 'none':
