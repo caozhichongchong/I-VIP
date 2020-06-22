@@ -28,7 +28,7 @@ parser.add_argument("--r",
 
 ################################################## Definition ########################################################
 args = parser.parse_args()
-if args.tx != 'None.norm':
+if 'None' not in args.tx:
     tx_dir, tx_file = os.path.split(os.path.abspath(args.tx))
     # load pathogen list
     Pathogen=[]
@@ -71,7 +71,7 @@ def pathogen(taxa):
 
 
 def network(line,nodetable,edgetable,Repli,Taxon):
-    if Taxon != 'None.norm':
+    if 'None' not in Taxon:
         try:
             # contruct the phylogenetic tree by adding taxonomy nodes and edges
             for i in range((c1 - 1), c2):
@@ -341,7 +341,7 @@ for anno_file in list_file:
     edgetable = []
     # write labels in the edge and node tables
     node_add('Node', 'Shape', 'Label', 'Labelcolor', 'Color', 'Length')
-    if args.tx != 'None.norm':
+    if 'None' not in args.tx:
         node_add('Bacteria', 'taxon', 'Bacteria', 'black', 'None', 50)
     else:
         node_add('Phylogram', 'taxon', 'Phylogram', 'black', 'None', 50)
