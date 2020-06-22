@@ -328,7 +328,7 @@ ARG_shortname=dict()
 for line in open('database/ARG_shortname.txt','r'):
     ARG_shortname.setdefault(str(line).split('\t')[0],str(line).split('\t')[1].split('\r')[0].split('\n')[0])
 # set column number for the integron gene cassettes and taxonomy
-if args.tx != 'None.norm':
+if 'None' not in args.tx:
     # taxonomy column
     c1 = int(str(args.tc).split(',')[0].replace(' ', '')) + 5
     c2 = int(str(args.tc).split(',')[1].replace(' ', '')) + 5
