@@ -78,11 +78,11 @@ def moduleA1(list_file):
         # attC search by
         Result = []
         for files in Newlist:
+            filesize = int(os.path.getsize(files)) / 1000000
             in_dir, files = os.path.split(files)
             cmd = args.cmsearch + ' --tblout ' + os.path.join(str(search_path), str(
-                files) + '.Z.max.attc.hits.txt') + ' -Z `du -m ' \
-                  +  os.path.join(in_dir, str(files))\
-                  + ' | cut -f1` --' + str(args.q) + ' --cpu ' + str(args.t) + ' -E ' \
+                files) + '.Z.max.attc.hits.txt') + ' -Z %s --' % (filesize) \
+                  + str(args.q) + ' --cpu ' + str(args.t) + ' -E ' \
                   + str(args.c) + ' database/attc_4.cm.hmm ' + os.path.join(in_dir, str(files))
             os.system(cmd)
             Result.append(os.path.join(str(search_path), str(files) + '.Z.max.attc.hits.txt'))
