@@ -168,7 +168,7 @@ def Cmsearch(list_file):
         #attC search by
         Result = []
         for files in Newlist:
-            filesize = int(os.path.getsize(files))/1000000
+            filesize = max(int(os.path.getsize(files)) / 1000000,1)
             cmd = args.cmsearch + ' --tblout ' + str(files) + '.Z.max.attc.hits.txt' + ' -Z %s --'%(filesize) \
                   + str(args.q) + ' --cpu ' + str(args.t) + ' -E ' \
                   + str(args.c) + ' database/attc_4.cm.hmm ' + str(files)

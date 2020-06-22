@@ -78,7 +78,7 @@ def moduleA1(list_file):
         # attC search by
         Result = []
         for files in Newlist:
-            filesize = int(os.path.getsize(files)) / 1000000
+            filesize = max(int(os.path.getsize(files)) / 1000000,1)
             in_dir, files = os.path.split(files)
             cmd = args.cmsearch + ' --tblout ' + os.path.join(str(search_path), str(
                 files) + '.Z.max.attc.hits.txt') + ' -Z %s --' % (filesize) \
