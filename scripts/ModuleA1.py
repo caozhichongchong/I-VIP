@@ -84,6 +84,7 @@ def moduleA1(list_file):
                 files) + '.Z.max.attc.hits.txt') + ' -Z %s --' % (filesize) \
                   + str(args.q) + ' --cpu ' + str(args.t) + ' -E ' \
                   + str(args.c) + ' database/attc_4.cm.hmm ' + os.path.join(in_dir, str(files))
+            print(filesize, cmd)
             os.system(cmd)
             Result.append(os.path.join(str(search_path), str(files) + '.Z.max.attc.hits.txt'))
         # merge search results of split files

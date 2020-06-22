@@ -98,7 +98,7 @@ in_dir= os.path.abspath(args.i)
 if args.tx == 'none':
     txset = 'None'
 elif args.i == 'example':
-    txset = os.path.join(in_dir + '/example',args.tx)
+    txset = os.path.join(in_dir + '/example','taxon.txt')
 else:
     txset = args.tx
 if args.tc == 'none':
@@ -236,7 +236,7 @@ else:
     print 'Step4 Finished: integron extraction\n'
     flog.write('Step4 Finished: integron extraction\n')
     # Step5 Gene cassettes annotation
-    if txset != 'None':
+    if 'None' not in txset:
         # normalize the taxonomy information
         cmd5 = 'python '+workingdir+'/scripts/Taxon_normalization.py -i ' + str(in_dir) + ' --tc ' + \
                str(tcset) + ' --tx ' + str(txset) + '\n'
