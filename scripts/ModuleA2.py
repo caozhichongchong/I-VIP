@@ -172,7 +172,6 @@ def Cmsearch(list_file):
             cmd = args.cmsearch + ' --tblout ' + str(files) + '.Z.max.attc.hits.txt' + ' -Z %s --'%(filesize) \
                   + str(args.q) + ' --cpu ' + str(args.t) + ' -E ' \
                   + str(args.c) + ' database/attc_4.cm.hmm ' + str(files)
-            print(filesize,cmd)
             os.system(cmd)
             Result.append(str(files) + '.Z.max.attc.hits.txt')
         # merge search results of split files

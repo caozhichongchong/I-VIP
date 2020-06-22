@@ -99,12 +99,14 @@ if args.tx == 'none':
     txset = 'None'
 elif args.i == 'example':
     txset = os.path.join(in_dir + '/example','taxon.txt')
+    tcset = '2,8'
 else:
     txset = args.tx
-if args.tc == 'none':
-    tcset = 'None'
-else:
-    tcset = args.tc
+if args.i != 'example':
+    if args.tc == 'none':
+        tcset = 'None'
+    else:
+        tcset = args.tc
 
 workingdir = os.path.abspath(os.path.dirname(__file__))
 
