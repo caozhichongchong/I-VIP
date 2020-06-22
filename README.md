@@ -1,11 +1,11 @@
 # I-VIP
 Please refer to the User Manual\
 Update: I-VIP.v1.1\
-https://github.com/caozhichongchong/I-VIP/releases  \
-For python >= 3.0 (trial version)\
-https://github.com/caozhichongchong/I-VIP/releases/download/I-VIPv1.1/I-VIP.v1.1.py3.0.tar.gz \
+https://github.com/caozhichongchong/I-VIP/releases\
+For python >= 3.0\
+https://github.com/caozhichongchong/I-VIP/releases/download/2020/I-VIP.py3.2020release.zip \
 For python <3.0\
-https://github.com/caozhichongchong/I-VIP/releases/download/I-VIPv1.1/I-VIP.v1.1.tar.gz
+https://github.com/caozhichongchong/I-VIP/releases/download/2020/I-VIP.2020release.zip
 
 ## How to use it
 
