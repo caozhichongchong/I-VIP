@@ -354,7 +354,7 @@ def Combine(target, lable, cutoff=4000):
     return combine
 
 
-def write_integron(Name, Site, Annotation, Inttype):
+def write_integron(Name, Site, Annotation, Inttype,No_integron):
     # output integron into a format of
     # 'Integron_Type' + '\t' + 'Contig_ID' + '\t' + 'Gene_Cassatte_Number' + '\t' +
     #            'Gene_Locus' + '\t' + 'Gene_Annotation' + '\n'
@@ -362,6 +362,7 @@ def write_integron(Name, Site, Annotation, Inttype):
     # count the number of attC on the integron
     NumofattC = int(str(";".join([str(x) for x in Annotation])).count('attC'))
     if NumofattC >= 2:
+        No_integron += 1
         # integron classification
         # Type A
         if ('IntI1' in Inttype) and ('attC' in Inttype) \
@@ -392,7 +393,7 @@ def write_integron(Name, Site, Annotation, Inttype):
             f1.write('E' + '\t' + str(Name) + '\t' + str(NumofattC) + '\t' +
                      ";".join([str(x) for x in Site]) + '\t' + ";".join([str(x) for x in Annotation]) + '\t'+ str(Inttype)+ '\n')
             f1.close()
-
+    return No_integron
 
 ################################################### Programme #######################################################
 # load ORF information of loci
@@ -407,6 +408,7 @@ for file_name in list_fasta:
     print 'Identifying integrons in ' + str(file_name)
     flog.write('Identifying integrons in ' + str(file_name)+'\n')
     input_path, input_file = os.path.split(file_name)
+    No_integron = 0
     try:
         # load attC results
         # Attc_list = {Contig, [attc infor list]}
@@ -460,7 +462,8 @@ for file_name in list_fasta:
                     for key in result:
                         # output each integron
                         # result = {Integron_name, [Site, Annotation, Inttype]}
-                        write_integron(key, result[key][0], result[key][1], result[key][2])
+                        No_integron = write_integron(key, result[key][0], result[key][1], result[key][2],No_integron)
+        print 'Identified %s integrons in %s'%(No_integron,file_name)
     except IOError:
         print 'No attC found in ' + str(input_file)
         flog.write('No attC found in ' + str(input_file)+'\n')
