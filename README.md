@@ -1,12 +1,17 @@
 # I-VIP
 Please refer to the User Manual\
+Update: I-VIP.v1.1\
+https://github.com/caozhichongchong/I-VIP/releases  \
+For python >= 3.0 (trial version)\
+https://github.com/caozhichongchong/I-VIP/releases/download/I-VIPv1.1/I-VIP.v1.1.py3.0.tar.gz \
+For python <3.0\
+https://github.com/caozhichongchong/I-VIP/releases/download/I-VIPv1.1/I-VIP.v1.1.tar.gz
 https://github.com/caozhichongchong/I-VIP
 
 ## How to use it
 
 ### Examples
 
-`tar xvf I-VIPv1.0.tar.gz`\
 `unzip I-VIP.2020release.zip`
 
 1. Input folder (-i example), input files in the format of .gbff.gz (-f .gbff.gz), use GbffParser.py in scripts to extract contigs and ORFs (--ot 1), provide genbank files (--g example), use Module A2 (local search, --m 2), annotate the ORFs of antibiotic and metal resistance (--a Y), use usearch (--u usearch), output folder (example/example_output), input taxonomy metadata (--tx taxon.txt) and columns for phylum to strain level (--tc 4,10)\
