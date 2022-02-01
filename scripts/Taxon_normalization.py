@@ -25,8 +25,8 @@ try:
     c1=int(str(args.tc).split(',')[0].replace(' ',''))
     c2=int(str(args.tc).split(',')[1].replace(' ',''))
 except ValueError:
-    print 'Wrong input for --tc \nPlease input in the format of: start column number, end column number\n"\
-                      "Example: 2,8\nProceed with default value of 2,8\n'
+    print('Wrong input for --tc \nPlease input in the format of: start column number, end column number\n"\
+                      "Example: 2,8\nProceed with default value of 2,8\n')
 ################################################### Function #########################################################
 
 
@@ -52,7 +52,7 @@ def normalize(f1,f2):
                             newline += '\tunclassified Bacteria_' + str(i)
                         else:
                             Out=False
-                            for j in reversed(range((c1-1), i)):  # replace 'NA', 'None' or empty annotation
+                            for j in reversed(list(range((c1-1), i))):  # replace 'NA', 'None' or empty annotation
                                 if str(line).split('\t')[j].split('\r')[0].split('\n')[0] not in ['NA','','None'] and \
                                         'environmental samples' not in str(line).split('\t')[j].split('\r')[0].split('\n')[0] :
                                     newline += '\t' + str(line).split('\t')[j].split('\r')[0].split('\n')[0] + '_' + str(i)
@@ -66,8 +66,8 @@ def normalize(f1,f2):
                 except IndexError:
                     newline += '\n'
         except KeyError:
-            print 'The input c1 or c2 is out of the range of column number!\n' \
-                  'Please input the right column numbers\n'
+            print('The input c1 or c2 is out of the range of column number!\n' \
+                  'Please input the right column numbers\n')
             break
         f2.write(newline)
     f1.close()
@@ -114,7 +114,7 @@ def normalize3(f3,f4,Taxon2):
         newline = '\t'.join(str(line).split('\t')[0:(c1-1)])
         node2 = str(line).split('\t')[(c2-1)].split('\r')[0].split('\n')[0]
         templine = [node2]
-        for i in reversed(range((c1-1), (c2-1))):
+        for i in reversed(list(range((c1-1), (c2-1)))):
             node1 = Taxon2[node2][0].split('--')[0]
             templine.append(node1)
             node2 = node1

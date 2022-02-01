@@ -72,7 +72,7 @@ def filter_blast_list(file, Cutoff_identity, Cutoff_hitlength, GC_annotation):
         f.close()
         return
     except IOError:
-        print str(file) + ' is missing!\n'
+        print(str(file) + ' is missing!\n')
         flog.write(str(file) + ' is missing!\n')
 
 
@@ -95,7 +95,7 @@ def ORF_annotation(Intstruc, GC_MRG, GC_ARG, output):
             f.write(line+'\n')
         f.close()
     except IOError:
-        print str(Intstruc) + ' is missing!\n'
+        print(str(Intstruc) + ' is missing!\n')
         flog.write(str(Intstruc) + ' is missing!\n')
 
 
@@ -119,8 +119,8 @@ if args.a == 'Y':
               + str(
         resultdir) + "/all.ORFs.ClassI.fasta.MRG.blast.txt -outfmt 6 -evalue 1e-5 -num_threads " + \
               str(args.t) + " \n"
-    print cmdARG
-    print cmdMRG
+    print(cmdARG)
+    print(cmdMRG)
     os.system(cmdARG)
     os.system(cmdMRG)
     # load ARG and MRG reference length

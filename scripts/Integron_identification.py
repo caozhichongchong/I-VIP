@@ -277,7 +277,7 @@ def Findattc(combine, key, contig, site1, site2, cutoff=4000):
                         # delete used attC
                         attC.append('#')
             except IndexError:
-                print 'Not valid attC format for: ' + str([contig, attC])
+                print('Not valid attC format for: ' + str([contig, attC]))
                 flog.write('Not valid attC format for: ' + str([contig, attC])+'\n')
     #return new integron loci
     return [site1, site2]
@@ -354,7 +354,7 @@ def Combine(target, lable, cutoff=4000):
     return combine
 
 
-def write_integron(Name, Site, Annotation, Inttype):
+def write_integron(Name, Site, Annotation, Inttype, No_integron):
     # output integron into a format of
     # 'Integron_Type' + '\t' + 'Contig_ID' + '\t' + 'Gene_Cassatte_Number' + '\t' +
     #            'Gene_Locus' + '\t' + 'Gene_Annotation' + '\n'
@@ -392,6 +392,7 @@ def write_integron(Name, Site, Annotation, Inttype):
             f1.write('E' + '\t' + str(Name) + '\t' + str(NumofattC) + '\t' +
                      ";".join([str(x) for x in Site]) + '\t' + ";".join([str(x) for x in Annotation]) + '\t'+ str(Inttype)+ '\n')
             f1.close()
+    return No_integron
 
 
 ################################################### Programme #######################################################
@@ -404,9 +405,10 @@ for line in open(args.ot,'r'):
                           float(str(line).split('\t')[-2])])
 # identify integrons in each target sequence file
 for file_name in list_fasta:
-    print 'Identifying integrons in ' + str(file_name)
+    print('Identifying integrons in ' + str(file_name))
     flog.write('Identifying integrons in ' + str(file_name)+'\n')
     input_path, input_file = os.path.split(file_name)
+    No_integron = 0
     try:
         # load attC results
         # Attc_list = {Contig, [attc infor list]}
@@ -420,7 +422,7 @@ for file_name in list_fasta:
             SulI_list = dict()
             int_blast_list(SulI_name, SulI_list)
         except IOError:
-            print 'No sul1 found for ' + str(input_file)
+            print('No sul1 found for ' + str(input_file))
             flog.write('No sul1 found for ' + str(input_file)+'\n')
         try:
             # load integrase results
@@ -429,7 +431,7 @@ for file_name in list_fasta:
             Integrase_list = dict()
             int_blast_list(IntI_name, Integrase_list)
         except IOError:
-            print 'No integrase found for ' + str(input_file)
+            print('No integrase found for ' + str(input_file))
             flog.write('No integrase found ' + str(input_file)+'\n')
         # output integrons identified
         f1 = open(
@@ -460,10 +462,11 @@ for file_name in list_fasta:
                     for key in result:
                         # output each integron
                         # result = {Integron_name, [Site, Annotation, Inttype]}
-                        write_integron(key, result[key][0], result[key][1], result[key][2])
+                        No_integron = write_integron(key, result[key][0], result[key][1], result[key][2], No_integron)
+        print ('Identified %s integrons in %s' % (No_integron, file_name))
     except IOError:
-        print 'No attC found in ' + str(input_file)
+        print('No attC found in ' + str(input_file))
         flog.write('No attC found in ' + str(input_file)+'\n')
-print 'Finished identifying integrons!'
+print('Finished identifying integrons!')
 flog.write('Finished identifying integrons!\n')
 flog.close()

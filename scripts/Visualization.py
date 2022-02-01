@@ -125,8 +125,8 @@ def network(line,nodetable,edgetable,Repli,Taxon):
                         edge_add(str(node1), str(node2), 'taxon', str(line).split('\t')[c1], 1)
                         edgetable.append(str(node1) + '-' + str(node2))
         except IndexError:
-            print "Wrong input for --tc \nPlease input in the format of: start column number, end column number\n"
-            print  "For example: 2,8\nProceed without taxonomy information\n"
+            print("Wrong input for --tc \nPlease input in the format of: start column number, end column number\n")
+            print("For example: 2,8\nProceed without taxonomy information\n")
             # no taxonomy information
             # connect the integron to the same node
             node1 = 'Phylogram'

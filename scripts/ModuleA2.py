@@ -169,7 +169,7 @@ def Cmsearch(list_file):
         Result = []
         for files in Newlist:
             filesize = max(int(os.path.getsize(files)) / 1000000,1)
-            cmd = args.cmsearch + ' --tblout ' + str(files) + '.Z.max.attc.hits.txt' + ' -Z %s --'%(filesize) \
+            cmd = args.cmsearch + ' --tblout ' + str(files) + '.Z.max.attc.hits.txt' + ' -Z %s --' % (filesize) \
                   + str(args.q) + ' --cpu ' + str(args.t) + ' -E ' \
                   + str(args.c) + ' database/attc_4.cm.hmm ' + str(files)
             os.system(cmd)
@@ -318,8 +318,8 @@ if args.func_type==0:
              ' --t ' + str(args.t) + ' --c ' + str(args.c) + \
            ' --q ' + str(args.q) + ' --cmsearch ' + str(args.cmsearch) + \
            ' --head ' + str(args.i) + '.warning.txt \n'
-    print cmd4
-    print cmd5
+    print(cmd4)
+    print(cmd5)
     del ORFs_anno
     ORFs_anno = dict()
     os.system(cmd4)
@@ -425,7 +425,7 @@ elif args.func_type == 1:
                ' --t ' + str(args.t) + ' --c ' + str(args.c) + \
                ' --q ' + str(args.q) + ' --cmsearch ' + str(args.cmsearch) + \
                ' --head ' + str(args.i) + '.warning.txt \n'
-        print cmd6
+        print(cmd6)
         flog.write(cmd6 + '\n')
         del ORFs_anno
         ORFs_anno = dict()
@@ -438,7 +438,7 @@ elif args.func_type == 1:
                ' --t ' + str(args.t) + ' --c ' + str(args.c) + \
                ' --q ' + str(args.q) + ' --cmsearch ' + str(args.cmsearch) + \
                ' --head ' + str(args.i) + '.warning.txt \n'
-        print cmd7
+        print(cmd7)
         flog.write(cmd7 + '\n')
         del ORFs_anno
         ORFs_anno = dict()
@@ -454,7 +454,7 @@ else:
             f1.write(str(line))
             f1.close()
     os.system('rm -rf ' +str(input_path)+'/extract \n')
-    print 'ModuleA2.py finished!'
+    print('ModuleA2.py finished!')
     flog.write('Finished preparation!!\n')
     flog.close()
 

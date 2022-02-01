@@ -137,6 +137,6 @@ for attcfile in attc_filelist:
             else:
                 f1.write(line)
     f1.close()
-print 'Finished ModuleA1!'
+print('Finished ModuleA1!')
 flog.write('Finished ModuleA1!\n')
 flog.close()

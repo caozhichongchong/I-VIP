@@ -87,7 +87,7 @@ def filter_blast_list(file, Cutoff_identity, Cutoff_hitlength):
         f.close()
         return file + '.filter.txt'
     except IOError:
-        print str(file) + ' missing!'
+        print(str(file) + ' missing!')
         flog.write(str(file) + ' missing!' + '\n')
 
 
@@ -110,14 +110,14 @@ def Extractaa(root, searchfile, orffile, gene):
                                  str(AA_seq[AA]) + '\n')
                         AA_seq[AA]=''
                 except KeyError:
-                    print 'AA not found for ' + AA
+                    print('AA not found for ' + AA)
                     flog.write('AA not found for ' + AA + '\n')
         except IOError:
             pass
         f1.close()
         return os.path.join(root, orffile + '.' + str(gene) + '.aa')
     except (IOError):
-        print 'Files were missing: ' + orffile
+        print('Files were missing: ' + orffile)
         flog.write('Files were missing: ' + orffile + '\n')
 
 
@@ -145,8 +145,8 @@ def searchintsul(filename):
             cmdsulI1 += str(args.u) +" blastp --query " + args.r + "/Temp/"+filename + \
                       " --db database/sul1_database --out " + args.r + "/Temp/"+filename+\
                       ".sul1.usearch.txt --outfmt 6 --max-target-seqs 1 --evalue 1e-2 --threads " + str(args.t) + " \n"
-        print cmdint1
-        print cmdsulI1
+        print(cmdint1)
+        print(cmdsulI1)
         os.system(cmdint1)
         os.system(cmdsulI1)
         Int_file = Extractaa( args.r + '/Temp', filename+".int.usearch.txt", filename,'int')
@@ -168,7 +168,7 @@ def searchintsul(filename):
 def Calculate_length(file_name, ORF_format):
     # calculate the sequence length of ORFs
     if ORF_format == 'None':
-        print 'No ORF format information for ' + file_name + '!'
+        print('No ORF format information for ' + file_name + '!')
         flog.write('No ORF format information for ' + file_name + '!' + '\n')
     else:
         f1=open(args.r + '/Temp/all.orf.length','a')
@@ -186,7 +186,7 @@ def Calculate_length(file_name, ORF_format):
                         str(l1) + '\t' + str(l2) + '\t'+str(
                     len(record.seq)) + '\n')
         except (IOError):
-            print 'Files were missing: ' + file_name
+            print('Files were missing: ' + file_name)
             flog.write('Files were missing: ' + file_name + '\n')
         f1.close()
 
@@ -219,9 +219,9 @@ for file_name in list_data:
                         Calculate_length(orf_name, 2)
                         fot.write(file_name + '\t2\n')
                     except ValueError:
-                        print "There\'s some problem with the ORF files!\n" \
+                        print("There\'s some problem with the ORF files!\n" \
                               "Please check whether they are in the form of genome parsing (--ot 1)" \
-                              " or prodigal prediction (--ot 2)\n"
+                              " or prodigal prediction (--ot 2)\n")
             elif args.ot == 2:
                 try:
                     l1 = float(str(line).split(' # ')[1])
@@ -231,9 +231,9 @@ for file_name in list_data:
                     Calculate_length(orf_name, 2)
                     fot.write(file_name + '\t2\n')
                 except ValueError:
-                    print "There\'s some problem with the ORF files!\n" \
+                    print("There\'s some problem with the ORF files!\n" \
                           "Please check whether they are in the form of genome parsing (--ot 1)" \
-                          " or prodigal prediction (--ot 2)\n"
+                          " or prodigal prediction (--ot 2)\n")
             break
         f1.close()
     except IOError or ValueError:
@@ -267,6 +267,6 @@ for line in fint1:
     fnew = open(os.path.join(search_path, Filename + str(args.f) + '.int.txt'), 'a')
     fnew.write(line)
     fnew.close()
-print 'Finished preparation!'
+print('Finished preparation!')
 flog.write('Finished preparation!!\n')
 flog.close()

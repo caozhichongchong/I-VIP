@@ -21,10 +21,10 @@ args = parser.parse_args()
 
 
 ################################################### Programme #######################################################
-print "GbffParser.py was developed by Li-Guan Li and An-Ni Zhang"
-print "To extract the genome sequences and CDS sequences from both complete and draft genomes"
-print "Script is available to extract complete genome sequence and CDS sequences:"
-print "https://github.com/LiguanLi/ARG_MRG_Cooccurrence/blob/master/GBK_CDSextract.py"
+print("GbffParser.py was developed by Li-Guan Li and An-Ni Zhang")
+print("To extract the genome sequences and CDS sequences from both complete and draft genomes")
+print("Script is available to extract complete genome sequence and CDS sequences:")
+print("https://github.com/LiguanLi/ARG_MRG_Cooccurrence/blob/master/GBK_CDSextract.py")
 # set up gbff files
 in_dir = os.path.abspath(args.i)
 if args.f == '.gbff.gz':
@@ -38,16 +38,19 @@ else:
 list_gbff = glob.glob(os.path.join(in_dir,'*'+input_extension))
 # main programme
 if list_gbff == []:
-    print 'Fing no genbank files (.gbff or .gbff.gz) in ' + str(in_dir)
+    print('Fing no genbank files (.gbff or .gbff.gz) in ' + str(in_dir))
 else:
     Filenumber = 0
     for file_name1 in list_gbff:
         gb = SeqIO.parse(os.path.join(in_dir, file_name1), "genbank")
         in_dir, file_name1 = os.path.split(file_name1)
         tmp1 = file_name1.split("_")[0]
-        tmp2 = file_name1.split("_")[1]
+        try:
+            tmp2 = file_name1.split("_")[1]
+        except IndexError:
+            tmp2 = ''
         assem_name = "_".join([tmp1, tmp2])
-        print "Processing GenBank chr record %s" % assem_name
+        print("Processing GenBank chr record %s" % assem_name)
         Filenumber += 1
         try:
             os.mkdir('Chr/Chr' + str(int(Filenumber / 10000)))
@@ -78,7 +81,7 @@ else:
                         assert len(feature.qualifiers['translation']) == 1
                         aa_seq = feature.qualifiers['translation'][0]
                     except KeyError:
-                        print desc, 'no amni acids found!'
+                        print(desc, 'no amni acids found!')
                         aa_seq = ''
                     if AA_true == 1:
                         # output CDS sequence
@@ -91,5 +94,5 @@ else:
                         output_handle3.close()
                         AA_true = 1
             output_handle1.close()
-        print 'Retrieving whole genome sequences!'
-        print 'Done!'
+        print('Retrieving whole genome sequences!')
+        print('Done!')

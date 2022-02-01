@@ -302,17 +302,17 @@ def int_integron(file, AA_format):
                 if gbff_path != 'None':
                     # optional: extraction of integrase annotation and sequences from genbank
                     # integrase annotation will be added into the class Integron
-                    print "Extract integrase annotation from genbank files!"
+                    print("Extract integrase annotation from genbank files!")
                     extract_integrase_gbff(list_gbff, input_file, Keyintegron)
                 # extract ORFs
-                print "Extract integron elements and ORFs!"
+                print("Extract integron elements and ORFs!")
                 extract_ORFs(input_file, Keyintegron, AA_format)
                 # extract integron and integrase sequences
-                print "Extract integron sequences!"
+                print("Extract integron sequences!")
                 extract_Seqs(input_file, Keyintegron)
                 if gbff_path != 'None':
                     # optional: extraction of integron annotation and sequences from genbank
-                    print "Extract ORF annotation from genbank files!"
+                    print("Extract ORF annotation from genbank files!")
                     extract_gbff(list_gbff, input_file, Keyintegron)
 
 
@@ -643,8 +643,8 @@ for file_name in list_fasta:
         # AA_format, 1 for genbank parsing; 2 for prodigal predicting
         AA_format = ORFformat.get(input_file.replace(input_format,args.f), 'None')
         if AA_format == 'None':
-            print 'No ORF format information for ' +\
-                  os.path.join(file_path, input_file.replace(input_format,args.f)) + '!'
+            print('No ORF format information for ' +\
+                  os.path.join(file_path, input_file.replace(input_format,args.f)) + '!')
             flog.write('No ORF format information for ' +
                   os.path.join(file_path, input_file.replace(input_format,args.f)) + '!\n')
         else:
@@ -665,6 +665,6 @@ cmd='cat '+str(resultdir) + '/Other/Genbank_annotation/* > '+str(resultdir) + '/
 'cat '+str(resultdir) + '/ClassI/Integron_seqs/* > '+str(resultdir) + '/all.Integron_seqs.ClassI.fasta\n'+\
 'cat '+str(resultdir) + '/ClassI/Genbank_annotation/* > '+str(resultdir) + '/all.Genbank_annotation.ClassI.txt\n'
 os.system(cmd)
-print 'Finished integron extraction!'
+print('Finished integron extraction!')
 flog.write('Finished integron extraction!\n')
 flog.close()

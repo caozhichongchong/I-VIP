@@ -111,10 +111,10 @@ if args.i != 'example':
 workingdir = os.path.abspath(os.path.dirname(__file__))
 
 # set up input files
-#print [args.f, any (format in args.f for format in ['gbff','gbff.gz'])]
+#print([args.f, any (format in args.f for format in ['gbff','gbff.gz'])])
 if any (format in args.f for format in ['gbff','gbff.gz']):
     os.system('python '+workingdir+'/scripts/GbffParser.py -i ' + str(in_dir) + ' -f ' + str(args.f) + ' \n')
-    print 'python '+workingdir+'/scripts/GbffParser.py -i ' + str(in_dir) + ' -f ' + str(args.f) + ' \n'
+    print('python '+workingdir+'/scripts/GbffParser.py -i ' + str(in_dir) + ' -f ' + str(args.f) + ' \n')
     input_extension='.fa'
     orf_extension='.faa'
     genbank = in_dir
@@ -141,16 +141,16 @@ except OSError:
     pass
 # load the integrase and sul1 database
 Length = dict()
-for line in open(os.path.join(workingdir+'/database/' + 'Integrase.fasta.length.txt'), 'rb'):
+for line in open(os.path.join(workingdir+'/database/' + 'Integrase.fasta.length.txt'), 'r'):
     Length.setdefault(str(line).split('\t')[0], float(str(line).split('\t')[2]))
-for line in open(os.path.join(workingdir+'/database/' + 'sul1_database.txt.length.txt'), 'rb'):
+for line in open(os.path.join(workingdir+'/database/' + 'sul1_database.txt.length.txt'), 'r'):
     Length.setdefault(str(line).split('\t')[0], float(str(line).split('\t')[2]))
 # record I-VIP process
-flog = open('I-VIP.log', 'wb')
+flog = open('I-VIP.log', 'w')
 
 
 ################################################### Programme #######################################################
-print "\
+print("\
 ------------------------------------------------------------------------\n\
 I-VIP (Integron Identification and Visualization)\n\
 Requirement: cmsearch, blast\n\
@@ -160,9 +160,12 @@ Please remove  \":\", \"____\", and \"#\" from your filename\n\
 It\'s highly recommended to keep less than 10,000 files in your input folder\n\
 Copyright:An-Ni Zhang, Prof. Tong Zhang, University of Hong Kong\n\
 Citation:\n\
-2. Cury J, Jove T, Touchon M, Neron B, Rocha EP: Identification and analysis of integrons and \
+1. Zhang, A.N., ...,  Zhang, T., 2018. \n\
+Conserved phylogenetic distribution and limited antibiotic resistance of class 1 integrons revealed \n\
+by assessing the bacterial genome and plasmid collection. Microbiome, 6(1), p.130.\n\
+2. Cury J, ..., Rocha EP: Identification and analysis of integrons and \
 cassette arrays in bacterial genomes. Nucleic acids research 2016, 44:4539-4550. (attC database)\n\
-3. Yang Y, Jiang X, Chai B, Ma L, Li B, Zhang A, Cole JR, Tiedje JM, Zhang T: ARGs-OAP: online analysis\
+3. Yang Y, ..., Zhang T: ARGs-OAP: online analysis\
 pipeline for antibiotic resistance genes detection from metagenomic data using an integrated \
 structured ARG-database. Bioinformatics 2016. (optional: antibiotic resistance database)\n\
 4. Li L-G, Xia Y, Zhang T: Co-occurrence of antibiotic and metal resistance genes revealed in \
@@ -170,41 +173,41 @@ complete genome collection. The ISME Journal 2016.(optional: metal resistance da
 Contact anniz44@mit.edu and/or caozhichongchong@gmail.com\n\
 ------------------------------------------------------------------------\n\
 \nStart I-VIP log (in I-VIP.log)\n\
-"
+")
 
 
 if list_data == []:
-    print 'Find no ' + str(input_extension) + ' files in ' + str(in_dir) + '!\n'
-    print 'Stop running I-VIP!\n'
+    print('Find no ' + str(input_extension) + ' files in ' + str(in_dir) + '!\n')
+    print('Stop running I-VIP!\n')
     flog.write('Find no ' + str(input_extension) + ' files in ' + str(in_dir) + '!\nStop running I-VIP!\n')
 else:
-    print 'I-VIP: Searching integrons in ' + str(len(list_data)) + ' files of ' + str(in_dir) + '\n'
+    print('I-VIP: Searching integrons in ' + str(len(list_data)) + ' files of ' + str(in_dir) + '\n')
     if len(list_data) >= 10000:
-        print 'It\'s highly recommended to keep less than 10,000 files in your input folder!\n'
+        print('It\'s highly recommended to keep less than 10,000 files in your input folder!\n')
     # Step1 format orfs and search for integrase and sul1
     cmd1 = 'python '+workingdir+'/scripts/Preparation.py -i ' + str(in_dir) + ' -f ' + str(input_extension) + ' --o '+str(orf_extension) + \
             ' --r ' + str(args.r) + ' --t ' + str(args.t) + ' --u ' + str(args.u) + ' --ot ' + str(orf_format) + \
            ' --prodigal '+ str(args.prodigal) + ' --blastp ' + str(args.blastp) +' \n'
     if args.u != 'None':
         if 'usearch' in args.u:
-            print 'Start search integrase and sul1 genes by usearch!\n'
+            print('Start search integrase and sul1 genes by usearch!\n')
             flog.write('Start search integrase and sul1 genes by usearch!\n')
         elif "diamond" in args.u:
-            print 'Start search integrase and sul1 genes by diamond!\n'
+            print('Start search integrase and sul1 genes by diamond!\n')
             flog.write('Start search integrase and sul1 genes by diamond!\n')
         else:
-            print "Wrong input for -u (usearch, diamond or None), proceed one-step search using blastp\n"
+            print("Wrong input for -u (usearch, diamond or None), proceed one-step search using blastp\n")
             cmd1 = 'python '+workingdir+'/scripts/Preparation.py -i ' + str(in_dir) + ' -f ' + str(input_extension) + ' --o ' + str(
                 input_extension) + ' --t ' + str(args.t) + str(args.u) + ' --ot ' + str(orf_format) + ' --u None --prodigal ' + str(
                 args.prodigal) + ' --r ' + str(args.r) +' --blastp ' + str(args.blastp)
             flog.write("Wrong input for -u (usearch, diamond or None), proceed one-step search using blastp\n")
     else:
-        print 'Start search integrase and sul1 genes by blastp!\n'
+        print('Start search integrase and sul1 genes by blastp!\n')
         flog.write('Start search integrase and sul1 genes by blastp!\n')
-    print cmd1
+    print(cmd1)
     flog.write(cmd1)
     os.system(cmd1)
-    print 'Step1 Finished: format orfs + search for integrase and sul1\n'
+    print('Step1 Finished: format orfs + search for integrase and sul1\n')
     flog.write('Step1 Finished: format orfs + search for integrase and sul1\n')
     # Step2 attC search
     if args.m == 1:
@@ -215,27 +218,27 @@ else:
         cmd2 = 'python '+workingdir+'/scripts/ModuleA2.py -input ' + str(in_dir) + ' --f ' + str(input_extension) + ' --o ' + str(orf_extension) + \
                ' --ot ' + str(args.r) + '/Temp/all.orf.length --t ' + str(args.t) + ' --c ' + str(args.c) + \
                ' --r ' + str(args.r) + ' --q ' + str(args.q) + ' --cmsearch ' + str(args.cmsearch) + '\n'
-    print cmd2
+    print(cmd2)
     flog.write(cmd2)
     os.system(cmd2)
-    print 'Step2 Finished: search for attC\n'
+    print('Step2 Finished: search for attC\n')
     flog.write('Step2 Finished: search for attC\n')
     # Step3 Integron combination
     cmd3='python '+workingdir+'/scripts/Integron_identification.py -i ' + str(in_dir) + ' -f '+str(input_extension)+' -o '+str(orf_extension)+\
          ' --d '+str(args.d)+ ' --r ' + str(args.r) +\
          ' --m ' + str(args.m) + ' --ot ' + str(args.r) + '/Temp/all.orf.length --c '+str(args.c) + '\n'
-    print cmd3
+    print(cmd3)
     flog.write(cmd3)
     os.system(cmd3)
-    print 'Step3 Finished: integron identification and classification\n'
+    print('Step3 Finished: integron identification and classification\n')
     flog.write('Step3 Finished: integron identification and classification\n')
     # Step4 Integron extraction
     cmd4='python '+workingdir+'/scripts/Integron_extraction.py -i ' + str(in_dir) + ' --g '+\
         str(genbank) + ' --r ' + str(args.r) + ' --f ' + str(input_extension) + ' --o ' + str(orf_extension) + '\n'
-    print cmd4
+    print(cmd4)
     flog.write(cmd4)
     os.system(cmd4)
-    print 'Step4 Finished: integron extraction\n'
+    print('Step4 Finished: integron extraction\n')
     flog.write('Step4 Finished: integron extraction\n')
     # Step5 Gene cassettes annotation
     if 'None' not in txset:
@@ -247,20 +250,20 @@ else:
     cmd5 += 'python '+workingdir+'/scripts/Integron_annotation.py -i ' + str(in_dir) + ' -f ' + \
                str(args.f) + ' --r ' + str(args.r) + ' --a ' + str(args.a) \
             + ' --t ' + str(args.t) + ' --tx ' + str(txset) + '.norm --blastp ' + str(args.blastp) +'\n'
-    print cmd5
+    print(cmd5)
     flog.write(cmd5)
     os.system(cmd5)
-    print 'Step5 Finished: gene cassettes annotation\n'
+    print('Step5 Finished: gene cassettes annotation\n')
     flog.write('Step5 Finished: gene cassettes annotation\n')
     os.system('rm -rf Temp \n')
     # Step6 Integron visualization
     cmd6 = 'python '+workingdir+'/scripts/Visualization.py -i ' + str(in_dir) + ' --tc ' + \
                str(tcset) + ' --tx ' + str(txset) + '.norm --r ' + \
            str(args.r) + ' --ot ' + str(args.r) + '/Temp/all.orf.length \n'
-    print cmd6
+    print(cmd6)
     flog.write(cmd6)
     os.system(cmd6)
-    print 'Step6 Finished: integron visualization\n'
+    print('Step6 Finished: integron visualization\n')
     flog.write('Step6 Finished: integron visualization\n')
     #os.system('rm -rf ' + str(args.r) +  '/Temp \n')
 flog.close()
